@@ -1,0 +1,53 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Sugar & Spice - Workshops{% endblock title %}
+
+{% block content %}
+<main>
+    <div class="workshops-page-content">
+        <h2 class="page-title">BOOK A WORKSHOP</h2>
+        
+        <div class="workshop-list">
+            <div class="workshop-item">
+                <div class="workshop-image">
+                    <img src="{% static 'images/Cupcake Masterclass.jpg' %}" alt="Cupcake Masterclass">
+                </div>
+                <div class="workshop-details">
+                    <h3>CUPCAKE MASTER</h3>
+                    <p>3 hr</p>
+                    <p>$115</p>
+                    <a href="{% url 'booking-calendar' %}" class="workshop-btn book-now-link" data-name="CUPCAKE MASTER" data-duration="3 hr" data-price="$115">BOOK A WORKSHOP</a>
+                </div>
+            </div>
+            <div class="workshop-item">
+                <div class="workshop-image">
+                    <img src="{% static 'images/Baking Class.jpg' %}" alt="Baking Class">
+                </div>
+                <div class="workshop-details">
+                    <h3>BAKING</h3>
+                    <p>1 hr 30 min</p>
+                    <p>$65</p>
+                     <a href="{% url 'booking-calendar' %}" class="workshop-btn book-now-link" data-name="BAKING" data-duration="1 hr 30 min" data-price="$65">BOOK A WORKSHOP</a>
+                </div>
+            </div>
+            <div class="workshop-item">
+                <div class="workshop-image">
+                    <img src="{% static 'images/Frosting Class.jpg' %}" alt="Frosting Class">
+                </div>
+                <div class="workshop-details">
+                    <h3>FROSTING</h3>
+                    <p>2 hr</p>
+                    <p>$85</p>
+                    <a href="{% url 'booking-calendar' %}" class="workshop-btn book-now-link" data-name="FROSTING" data-duration="2 hr" data-price="$85">BOOK A WORKSHOP</a>
+                </div>
+            </div>
+        </div>
+        <div class="star-divider">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star-of-life center-star"></i>
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        </div>
+    </div>
+</main>
+{% endblock content %}

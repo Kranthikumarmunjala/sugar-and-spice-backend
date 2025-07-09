@@ -1,0 +1,77 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Sugar & Spice - Order Online{% endblock title %}
+
+{% block content %}
+<main>
+    <section class="hero-section">
+        <img src="{% static 'images/cupcake.jpg' %}" alt="Chocolate cupcake" class="hero-image">
+    </section>
+    
+    <div class="order-page-content">
+        <h2 class="order-title">Order Online</h2>
+        <p class="order-subtitle">You can order online! Browse our menu items and choose what you'd like to order from us.</p>
+
+        <div class="order-controls">
+            <span class="order-status"><i class="fa-solid fa-circle"></i> Accepting Orders</span>
+            <div class="order-toggle">
+                <button class="toggle-btn active" data-modal-trigger="pickup">Pickup</button>
+                <button class="toggle-btn" data-modal-trigger="delivery">Delivery</button>
+            </div>
+        </div>
+
+        <div class="order-info">
+            <span><i class="fa-regular fa-clock"></i> Pickup time: Up to 30 minutes <a href="#" data-modal-trigger="pickup">Change</a></span>
+            <span><i class="fa-solid fa-location-dot"></i> Pickup Address: San Francisco, CA</span>
+        </div>
+
+        <div class="order-menu-header">
+            <div class="menu-tabs">
+                <a href="#" class="menu-tab-link active">FLAVORS</a>
+                <a href="#" class="menu-tab-link">CUPCAKES</a>
+            </div>
+            <a href="{% url 'cart' %}" class="view-cart-btn">View Cart</a>
+        </div>
+        
+        <h2 class="menu-flavors-title">FLAVORS</h2>
+        <div class="menu-grid">
+            <div class="menu-item">
+                <img src="{% static 'images/CHOCOLATE VANILA.png' %}" alt="Classic Red Velvet">
+                <h4>CLASSIC RED VELVET</h4>
+                <p class="description">I'm a dish description. Click "Edit Menu" to open the Restaurant...</p>
+                <p class="price">$9.00</p>
+                <button class="add-to-cart-btn" data-id="crv" data-name="CLASSIC RED VELVET" data-price="9.00" data-image="{% static 'images/CHOCOLATE VANILA.png' %}">Add to Cart</button>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'images/DOUBLE CHOCOLATE.png' %}" alt="Chocolate Vanilla">
+                <h4>CHOCOLATE VANILLA</h4>
+                <p class="description">I'm a dish description. Click "Edit Menu" to open the Restaurant...</p>
+                <p class="price">$9.00</p>
+                <button class="add-to-cart-btn" data-id="cv" data-name="CHOCOLATE VANILLA" data-price="9.00" data-image="{% static 'images/DOUBLE CHOCOLATE.png' %}">Add to Cart</button>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'images/GLUTEN-FREE RED VELVET.png' %}" alt="Double Chocolate">
+                <h4>DOUBLE CHOCOLATE</h4>
+                <p class="description">I'm a dish description. Click "Edit Menu" to open the Restaurant...</p>
+                <p class="price">$9.00</p>
+                <button class="add-to-cart-btn" data-id="dc" data-name="DOUBLE CHOCOLATE" data-price="9.00" data-image="{% static 'images/GLUTEN-FREE RED VELVET.png' %}">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="star-divider">
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star-of-life center-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+    </div>
+</main>
+{% endblock content %}
+
+{% block extra_elements %}
+    <div id="order-type-modal-overlay" class="order-modal-overlay"></div>
+    <div id="order-type-modal" class="order-modal">
+        <!-- ... (all the modal HTML code goes here) ... -->
+    </div>
+    <div class="chat-button"><i class="fa-solid fa-comment-dots"></i> Let's Chat!</div>
+{% endblock extra_elements %}

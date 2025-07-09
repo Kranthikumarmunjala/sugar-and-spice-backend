@@ -1,0 +1,55 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Sugar & Spice - My Cart{% endblock title %}
+
+{% block content %}
+<main>
+    <div class="cart-page-container">
+        <div class="cart-items-column">
+            <h2 class="page-title">My cart</h2>
+            <div id="full-cart-items-list" class="cart-items-list">
+                <!-- Cart items will be injected here by JavaScript -->
+            </div>
+            <div class="cart-actions">
+                <a href="#" class="cart-action-link" id="promo-link"><i class="fa-solid fa-tag"></i> Enter a promo code</a>
+                <div id="promo-input-container" class="hidden">
+                    <input type="text" placeholder="e.g. SAVE50">
+                    <button>Apply</button>
+                </div>
+                <a href="#" class="cart-action-link" id="note-link"><i class="fa-regular fa-message"></i> Add a note</a>
+                <div id="note-input-container" class="hidden">
+                     <textarea placeholder="e.g. Leave outside the front door"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-summary-column">
+            <h2 class="page-title">Order summary</h2>
+            <div class="summary-details">
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="summary-subtotal">$0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery</span>
+                    <a href="#">Estimate Delivery</a>
+                </div>
+                <hr>
+                <div class="summary-row total-row">
+                    <span>Total</span>
+                    <span id="summary-total">$0.00</span>
+                </div>
+            </div>
+            <button class="checkout-btn">Checkout</button>
+            <p class="secure-checkout-text"><i class="fa-solid fa-lock"></i> Secure Checkout</p>
+        </div>
+    </div>
+
+    <div class="star-divider">
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star-of-life center-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+    </div>
+</main>
+{% endblock content %}

@@ -1,0 +1,72 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Sugar & Spice - Home{% endblock title %}
+
+{% block content %}
+<main>
+    <section class="hero-section">
+        <div class="hero-slide active">
+            <img src="{% static 'images/p2.jpg' %}" alt="A delicious chocolate cupcake">
+        </div>
+        <div class="hero-slide">
+            <img src="{% static 'images/p6.jpg' %}" alt="A rich double chocolate cupcake">
+        </div>
+        <div class="hero-slide">
+            <img src="{% static 'images/p3.jpg' %}" alt="A classic cupcake with a heart">
+        </div>
+    </section>
+
+    <div class="gallery-container">
+        <section class="gallery-section">
+            <div class="gallery-item"><img src="{% static 'images/CLASSIC RED VELVET.png' %}" alt="Cupcake 1"></div>
+            <div class="gallery-item"><img src="{% static 'images/CHOCOLATE VANILA.png' %}" alt="Cupcake 2"></div>
+            <div class="gallery-item"><img src="{% static 'images/DOUBLE CHOCOLATE.png' %}" alt="Cupcake 3"></div>
+            <div class="gallery-item"><img src="{% static 'images/SUGAR-FREE CHOCOLATE VANILA.png' %}" alt="Cupcake 4"></div>
+            <div class="gallery-item"><img src="{% static 'images/GLUTEN-FREE RED VELVET.png' %}" alt="Cupcake 5"></div>
+            <div class="gallery-item"><img src="{% static 'images/CLASSIC RED VELVET.png' %}" alt="Cupcake 1"></div>
+            <div class="gallery-item"><img src="{% static 'images/CHOCOLATE VANILA.png' %}" alt="Cupcake 2"></div>
+            <div class="gallery-item"><img src="{% static 'images/DOUBLE CHOCOLATE.png' %}" alt="Cupcake 3"></div>
+            <div class="gallery-item"><img src="{% static 'images/SUGAR-FREE CHOCOLATE VANILA.png' %}" alt="Cupcake 4"></div>
+            <div class="gallery-item"><img src="{% static 'images/GLUTEN-FREE RED VELVET.png' %}" alt="Cupcake 5"></div>
+        </section>
+    </div>
+
+    <div class="star-divider">
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star-of-life center-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+    </div>
+
+    <section class="info-section">
+        <div class="info-item">
+            <i class="fa-solid fa-cake-candles icon-large"></i>
+            <h3>LIKE & FOLLOW</h3>
+            <div class="social-icons">
+                <a href="https://instagram.com" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://facebook.com" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+            </div>
+        </div>
+        <div class="info-item">
+            <i class="fa-solid fa-ice-cream icon-large"></i>
+            <h3>OUR MENU</h3>
+            <a href="{% url 'menu' %}" class="info-link">Click Here</a>
+        </div>
+        <div class="info-item">
+            <i class="fa-solid fa-gifts icon-large"></i>
+            <h3>COME VISIT US</h3>
+            <a href="{% url 'contact' %}#map-section" class="info-link">View Map</a>
+        </div>
+    </section>
+
+    <div class="star-divider">
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star-of-life center-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+    </div>
+</main>
+{% endblock content %}

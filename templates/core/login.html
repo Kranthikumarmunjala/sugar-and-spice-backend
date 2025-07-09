@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Sugar & Spice - Log In{% endblock title %}
+
+{% block content %}
+<main>
+    <div class="login-page-container">
+        <h2 class="page-title">Log In</h2>
+        <form class="login-form">
+            <div class="form-group">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" name="password" required>
+            </div>
+            <a href="{% url 'forgot-password' %}" class="forgot-password">Forgot password?</a>
+            <button type="submit" class="login-btn">Log In</button>
+        </form>
+        <div class="signup-prompt">
+            <p>New to this site? <a href="{% url 'signup' %}">Sign Up</a></p>
+        </div>
+    </div>
+</main>
+{% endblock content %}

@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- The title will be different for each page -->
+    <title>{% block title %}Sugar & Spice{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <header class="top-header">
+            <a href="{% url 'login' %}" class="login-link"><i class="fa-solid fa-user"></i> Log In</a>
+            <a href="{% url 'cart' %}" id="cart-icon-link" class="cart-link">
+                <i class="fa-solid fa-bag-shopping"></i>
+            </a>
+        </header>
+
+        <a href="{% url 'home' %}" class="logo-link">
+            <section class="logo-section">
+                <img src="{% static 'images/spice_logo.png' %}" alt="Sugar & Spice Logo" class="logo-img">
+                <div class="logo-text">
+                    <h1>SUGAR & SPICE</h1>
+                    <p>And All Things Nice</p>
+                </div>
+            </section>
+        </a>
+
+        <nav class="main-nav">
+            <ul>
+                <!-- Note: The 'active' class is handled in each child template -->
+                <li><a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">HOME</a></li>
+                <li><a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">ABOUT US</a></li>
+                <li><a href="{% url 'menu' %}" class="{% if request.resolver_match.url_name == 'menu' %}active{% endif %}">MENU</a></li>
+                <li><a href="{% url 'order-online' %}" class="{% if request.resolver_match.url_name == 'order-online' %}active{% endif %}">ORDER ONLINE</a></li>
+                <li><a href="{% url 'contact' %}" class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">CONTACT</a></li>
+                <li><a href="{% url 'workshops' %}" class="{% if request.resolver_match.url_name == 'workshops' or request.resolver_match.url_name == 'booking-calendar' or request.resolver_match.url_name == 'booking-form' %}active{% endif %}">WORKSHOPS</a></li>
+            </ul>
+        </nav>
+
+        <!-- This is where the unique content of each page will go -->
+        {% block content %}
+        {% endblock content %}
+
+    </div>
+    
+    <footer class="site-footer">
+        <p>© 2035 by SUGAR & SPICE. Powered and secured by <a href="https://www.wix.com" target="_blank">Wix</a></p>
+    </footer>
+    
+    <!-- These elements are on every page -->
+    <div class="cart-overlay"></div>
+    <aside class="cart-sidebar"></aside>
+
+    <!-- This block is for pages that have extra elements, like modals -->
+    {% block extra_elements %}
+    {% endblock extra_elements %}
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

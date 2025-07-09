@@ -1,0 +1,58 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Sugar & Spice - Menu{% endblock title %}
+
+{% block content %}
+<main class="menu-page">
+    <section class="menu-section">
+        <h3 class="menu-category-title">CUPCAKES</h3>
+        <h2 class="menu-flavors-title">FLAVORS</h2>
+        
+        <div class="menu-grid">
+            <div class="menu-item">
+                <img src="{% static 'images/CLASSIC RED VELVET.png' %}" alt="Classic Red Velvet">
+                <h4>CLASSIC RED VELVET</h4>
+                <p class="description">A timeless classic with a moist, velvety crumb and a rich cream cheese frosting.</p>
+                <p class="price">$9.00</p>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'images/CHOCOLATE VANILA.png' %}" alt="Chocolate Vanilla">
+                <h4>CHOCOLATE VANILLA</h4>
+                <p class="description">Rich chocolate cake topped with a light and fluffy vanilla bean buttercream.</p>
+                <p class="price">$9.00</p>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'images/DOUBLE CHOCOLATE.png' %}" alt="Double Chocolate">
+                <h4>DOUBLE CHOCOLATE</h4>
+                <p class="description">For the ultimate chocolate lover. Decadent chocolate cake with a silky chocolate ganache frosting.</p>
+                <p class="price">$9.00</p>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'images/GLUTEN-FREE RED VELVET.png' %}" alt="Gluten-Free Red Velvet">
+                <h4>GLUTEN-FREE RED VELVET</h4>
+                <p class="description">Our famous red velvet, now available with a gluten-free recipe without compromising on taste.</p>
+                <p class="price">$9.00</p>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'images/SUGAR-FREE CHOCOLATE VANILA.png' %}" alt="Sugar-Free Chocolate Vanilla">
+                <h4>SUGAR-FREE CHOCOLATE VANILLA</h4>
+                <p class="description">Enjoy our delicious chocolate cupcake with vanilla frosting, made with natural sweeteners.</p>
+                <p class="price">$9.00</p>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'images/SUGAR-FREE DOUBLE CHOCOLATE.png' %}" alt="Sugar-Free Double Chocolate">
+                <h4>SUGAR-FREE DOUBLE CHOCOLATE</h4>
+                <p class="description">All the rich chocolatey goodness, none of the sugar. A guilt-free indulgence.</p>
+                <p class="price">$9.00</p>
+            </div>
+        </div>
+    </section>
+    
+    <div class="star-divider">
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star-of-life center-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+    </div>
+</main>
+{% endblock content %}
