@@ -192,48 +192,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- ORDER TYPE MODAL LOGIC ---
     const orderModalOverlay = document.getElementById('order-type-modal-overlay');
-    const orderModal = document.getElementById('order-type-modal');
-    if (orderModal) {
-        const modalTriggers = document.querySelectorAll('[data-modal-trigger]');
-        const closeBtn = document.getElementById('modal-close-btn');
-        const modalTabs = document.querySelectorAll('.modal-tab-btn');
-        const tabContents = document.querySelectorAll('.modal-tab-content');
-        const pickupTimeRadios = document.querySelectorAll('input[name="pickup-time"]');
-        const scheduleOptions = document.getElementById('schedule-options');
-        const openModal = (mode) => {
-            switchTab(mode);
-            orderModalOverlay.style.display = 'block';
-            orderModal.style.display = 'block';
-        };
-        const closeModal = () => {
-            orderModalOverlay.style.display = 'none';
-            orderModal.style.display = 'none';
-        };
-        const switchTab = (mode) => {
-            modalTabs.forEach(tab => {
-                tab.classList.remove('active');
-                if (tab.dataset.tab === mode) tab.classList.add('active');
-            });
-            tabContents.forEach(content => {
-                content.classList.remove('active');
-                if (content.id === `${mode}-content`) content.classList.add('active');
-            });
-        };
-        modalTriggers.forEach(trigger => {
-            trigger.addEventListener('click', (e) => {
-                e.preventDefault();
-                openModal(trigger.dataset.modalTrigger);
-            });
+const orderModal = document.getElementById('order-type-modal');
+if (orderModal) {
+    const modalTriggers = document.querySelectorAll('[data-modal-trigger]');
+    const closeBtn = document.getElementById('modal-close-btn');
+    const modalTabs = document.querySelectorAll('.modal-tab-btn');
+    const tabContents = document.querySelectorAll('.modal-tab-content');
+    const pickupTimeRadios = document.querySelectorAll('input[name="pickup-time"]');
+    const scheduleOptions = document.getElementById('schedule-options');
+
+    const openModal = (mode) => {
+        // First, set the correct tab to be active
+        switchTab(mode);
+        // Then, show the modal
+        orderModalOverlay.style.display = 'block';
+        orderModal.style.display = 'block';
+    };
+
+    const closeModal = () => {
+        orderModalOverlay.style.display = 'none';
+        orderModal.style.display = 'none';
+    };
+
+    const switchTab = (mode) => {
+        modalTabs.forEach(tab => {
+            tab.classList.remove('active');
+            if (tab.dataset.tab === mode) {
+                tab.classList.add('active');
+            }
         });
-        modalTabs.forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
-        const handlePickupRadioChange = () => {
-            scheduleOptions.style.display = document.querySelector('input[name="pickup-time"]:checked').value === 'later' ? 'flex' : 'none';
-        };
-        pickupTimeRadios.forEach(radio => radio.addEventListener('change', handlePickupRadioChange));
-        handlePickupRadioChange();
-        closeBtn.addEventListener('click', closeModal);
-        orderModalOverlay.addEventListener('click', closeModal);
-    }
+        tabContents.forEach(content => {
+            content.classList.remove('active');
+            if (content.id === `${mode}-content`) {
+                content.classList.add('active');
+            }
+        });
+    };
+
+    modalTriggers.forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Open the modal and switch to the tab specified by the button (e.g., 'pickup' or 'delivery')
+            openModal(trigger.dataset.modalTrigger);
+        });
+    });
+
+    modalTabs.forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+    });
+
+    const handlePickupRadioChange = () => {
+        // Check if the 'later' radio button is checked
+        const shouldShow = document.querySelector('input[name="pickup-time"]:checked').value === 'later';
+        // Show or hide the schedule options accordingly
+        scheduleOptions.style.display = shouldShow ? 'block' : 'none';
+    };
+
+    pickupTimeRadios.forEach(radio => {
+        radio.addEventListener('change', handlePickupRadioChange);
+    });
+
+    // Run once on load to set the initial state
+    handlePickupRadioChange();
+
+    closeBtn.addEventListener('click', closeModal);
+    orderModalOverlay.addEventListener('click', closeModal);
+}
 
     // --- BOOKING FLOW LOGIC ---
 

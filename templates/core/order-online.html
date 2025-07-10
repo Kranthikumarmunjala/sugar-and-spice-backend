@@ -69,9 +69,74 @@
 {% endblock content %}
 
 {% block extra_elements %}
+    {# The semi-transparent background overlay #}
     <div id="order-type-modal-overlay" class="order-modal-overlay"></div>
+
+    {# The Modal Window #}
     <div id="order-type-modal" class="order-modal">
-        <!-- ... (all the modal HTML code goes here) ... -->
+        <div class="order-modal-header">
+            <h3 class="order-modal-title">How would you like to receive your order?</h3>
+            <button id="modal-close-btn" class="modal-close-btn">×</button>
+        </div>
+        <div class="order-modal-body">
+            <div class="modal-tabs">
+                <button class="modal-tab-btn active" data-tab="pickup">Pickup</button>
+                <button class="modal-tab-btn" data-tab="delivery">Delivery</button>
+            </div>
+            
+            <!-- Pickup Content Pane -->
+            <div id="pickup-content" class="modal-tab-content active">
+                <div class="modal-form-group">
+                    <label>Pickup from:</label>
+                    <span class="sub-label">San Francisco, CA, USA</span>
+                </div>
+                 <div class="modal-form-group">
+                    <label>When:</label>
+                    <div class="modal-radio-group">
+                        <div class="modal-radio-item">
+                            <input type="radio" id="pickup-now" name="pickup-time" value="now" checked>
+                            <label for="pickup-now">Up to 30 minutes</label>
+                        </div>
+                        <div class="modal-radio-item">
+                            <input type="radio" id="pickup-later" name="pickup-time" value="later">
+                            <label for="pickup-later">Schedule for later</label>
+                        </div>
+                    </div>
+                </div>
+                <div id="schedule-options">
+                    <div id="schedule-inputs" class="modal-form-group" style="display: flex; gap: 20px;">
+                        <div style="flex: 1;">
+                            <label for="pickup-date">Date</label>
+                            <select id="pickup-date" class="modal-select">
+                                <option>Today</option>
+                                <option>Tomorrow</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="pickup-time-select">Time</label>
+                             <select id="pickup-time-select" class="modal-select">
+                                <option>3:45 AM</option>
+                                <option>4:00 AM</option>
+                                <option>4:15 AM</option>
+                                <option>4:30 AM</option>
+                                <option>4:45 AM</option>
+                                <option>5:00 AM</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                 <button class="modal-btn-save">Save</button>
+            </div>
+
+            <!-- Delivery Content Pane -->
+            <div id="delivery-content" class="modal-tab-content">
+                 <div class="modal-form-group">
+                    <label for="delivery-address">Deliver to:</label>
+                    <input type="text" id="delivery-address" class="modal-input" placeholder="Type in your delivery address">
+                </div>
+                <button class="modal-btn-save">Save</button>
+            </div>
+        </div>
     </div>
     <div class="chat-button"><i class="fa-solid fa-comment-dots"></i> Let's Chat!</div>
 {% endblock extra_elements %}
