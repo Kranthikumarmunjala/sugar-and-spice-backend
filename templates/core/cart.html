@@ -1,3 +1,5 @@
+<!-- In templates/core/cart.html -->
+
 {% extends 'core/base.html' %}
 {% load static %}
 
@@ -7,7 +9,7 @@
 <main>
     <div class="cart-page-container">
         <div class="cart-items-column">
-            <h2 class="page-title">My cart</h2>
+            <h2 class="page-title">My Cart</h2>
             <div id="full-cart-items-list" class="cart-items-list">
                 <!-- Cart items will be injected here by JavaScript -->
             </div>
@@ -25,7 +27,7 @@
         </div>
 
         <div class="order-summary-column">
-            <h2 class="page-title">Order summary</h2>
+            <h2 class="page-title">Order Summary</h2>
             <div class="summary-details">
                 <div class="summary-row">
                     <span>Subtotal</span>
@@ -47,9 +49,7 @@
     </div>
 
     <div class="star-divider">
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star-of-life center-star"></i>
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-of-life center-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
     </div>
 </main>
 {% endblock content %}

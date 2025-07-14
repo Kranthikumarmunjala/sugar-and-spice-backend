@@ -1,3 +1,5 @@
+<!-- In templates/core/index.html -->
+
 {% extends 'core/base.html' %}
 {% load static %}
 
@@ -6,7 +8,7 @@
 {% block content %}
 <main>
     <section class="hero-section">
-        <div class="hero-slide active">
+        <div class="hero-slide">
             <img src="{% static 'images/p2.jpg' %}" alt="A delicious chocolate cupcake">
         </div>
         <div class="hero-slide">
@@ -19,6 +21,7 @@
 
     <div class="gallery-container">
         <section class="gallery-section">
+            <!-- Images are duplicated to create a seamless loop -->
             <div class="gallery-item"><img src="{% static 'images/CLASSIC RED VELVET.png' %}" alt="Cupcake 1"></div>
             <div class="gallery-item"><img src="{% static 'images/CHOCOLATE VANILA.png' %}" alt="Cupcake 2"></div>
             <div class="gallery-item"><img src="{% static 'images/DOUBLE CHOCOLATE.png' %}" alt="Cupcake 3"></div>
@@ -33,11 +36,7 @@
     </div>
 
     <div class="star-divider">
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star-of-life center-star"></i>
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-of-life center-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
     </div>
 
     <section class="info-section">
@@ -62,11 +61,7 @@
     </section>
 
     <div class="star-divider">
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star-of-life center-star"></i>
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-of-life center-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
     </div>
 </main>
 {% endblock content %}

@@ -1,3 +1,5 @@
+<!-- In templates/core/order-online.html -->
+
 {% extends 'core/base.html' %}
 {% load static %}
 
@@ -13,23 +15,9 @@
         <h2 class="order-title">Order Online</h2>
         <p class="order-subtitle">You can order online! Browse our menu items and choose what you'd like to order from us.</p>
 
-        <div class="order-controls">
-            <span class="order-status"><i class="fa-solid fa-circle"></i> Accepting Orders</span>
-            <div class="order-toggle">
-                <button class="toggle-btn active" data-modal-trigger="pickup">Pickup</button>
-                <button class="toggle-btn" data-modal-trigger="delivery">Delivery</button>
-            </div>
-        </div>
-
-        <div class="order-info">
-            <span><i class="fa-regular fa-clock"></i> Pickup time: Up to 30 minutes <a href="#" data-modal-trigger="pickup">Change</a></span>
-            <span><i class="fa-solid fa-location-dot"></i> Pickup Address: San Francisco, CA</span>
-        </div>
-
         <div class="order-menu-header">
             <div class="menu-tabs">
                 <a href="#" class="menu-tab-link active">FLAVORS</a>
-                <a href="#" class="menu-tab-link">CUPCAKES</a>
             </div>
             <a href="{% url 'cart' %}" class="view-cart-btn">View Cart</a>
         </div>
@@ -37,106 +25,31 @@
         <h2 class="menu-flavors-title">FLAVORS</h2>
         <div class="menu-grid">
             <div class="menu-item">
-                <img src="{% static 'images/CHOCOLATE VANILA.png' %}" alt="Classic Red Velvet">
+                <img src="{% static 'images/CLASSIC RED VELVET.png' %}" alt="Classic Red Velvet">
                 <h4>CLASSIC RED VELVET</h4>
-                <p class="description">I'm a dish description. Click "Edit Menu" to open the Restaurant...</p>
+                <p class="description">A timeless classic with a moist, velvety crumb and a rich cream cheese frosting.</p>
                 <p class="price">$9.00</p>
-                <button class="add-to-cart-btn" data-id="crv" data-name="CLASSIC RED VELVET" data-price="9.00" data-image="{% static 'images/CHOCOLATE VANILA.png' %}">Add to Cart</button>
+                <button class="add-to-cart-btn" data-id="crv" data-name="CLASSIC RED VELVET" data-price="9.00" data-image="{% static 'images/CLASSIC RED VELVET.png' %}">Add to Cart</button>
             </div>
             <div class="menu-item">
-                <img src="{% static 'images/DOUBLE CHOCOLATE.png' %}" alt="Chocolate Vanilla">
+                <img src="{% static 'images/CHOCOLATE VANILA.png' %}" alt="Chocolate Vanilla">
                 <h4>CHOCOLATE VANILLA</h4>
-                <p class="description">I'm a dish description. Click "Edit Menu" to open the Restaurant...</p>
+                <p class="description">Rich chocolate cake topped with a light and fluffy vanilla bean buttercream.</p>
                 <p class="price">$9.00</p>
-                <button class="add-to-cart-btn" data-id="cv" data-name="CHOCOLATE VANILLA" data-price="9.00" data-image="{% static 'images/DOUBLE CHOCOLATE.png' %}">Add to Cart</button>
+                <button class="add-to-cart-btn" data-id="cv" data-name="CHOCOLATE VANILLA" data-price="9.00" data-image="{% static 'images/CHOCOLATE VANILA.png' %}">Add to Cart</button>
             </div>
             <div class="menu-item">
-                <img src="{% static 'images/GLUTEN-FREE RED VELVET.png' %}" alt="Double Chocolate">
+                <img src="{% static 'images/DOUBLE CHOCOLATE.png' %}" alt="Double Chocolate">
                 <h4>DOUBLE CHOCOLATE</h4>
-                <p class="description">I'm a dish description. Click "Edit Menu" to open the Restaurant...</p>
+                <p class="description">For the ultimate chocolate lover. Decadent chocolate cake with a silky chocolate ganache frosting.</p>
                 <p class="price">$9.00</p>
-                <button class="add-to-cart-btn" data-id="dc" data-name="DOUBLE CHOCOLATE" data-price="9.00" data-image="{% static 'images/GLUTEN-FREE RED VELVET.png' %}">Add to Cart</button>
+                <button class="add-to-cart-btn" data-id="dc" data-name="DOUBLE CHOCOLATE" data-price="9.00" data-image="{% static 'images/DOUBLE CHOCOLATE.png' %}">Add to Cart</button>
             </div>
         </div>
     </div>
 
     <div class="star-divider">
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star-of-life center-star"></i>
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-of-life center-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
     </div>
 </main>
 {% endblock content %}
-
-{% block extra_elements %}
-    {# The semi-transparent background overlay #}
-    <div id="order-type-modal-overlay" class="order-modal-overlay"></div>
-
-    {# The Modal Window #}
-    <div id="order-type-modal" class="order-modal">
-        <div class="order-modal-header">
-            <h3 class="order-modal-title">How would you like to receive your order?</h3>
-            <button id="modal-close-btn" class="modal-close-btn">×</button>
-        </div>
-        <div class="order-modal-body">
-            <div class="modal-tabs">
-                <button class="modal-tab-btn active" data-tab="pickup">Pickup</button>
-                <button class="modal-tab-btn" data-tab="delivery">Delivery</button>
-            </div>
-            
-            <!-- Pickup Content Pane -->
-            <div id="pickup-content" class="modal-tab-content active">
-                <div class="modal-form-group">
-                    <label>Pickup from:</label>
-                    <span class="sub-label">San Francisco, CA, USA</span>
-                </div>
-                 <div class="modal-form-group">
-                    <label>When:</label>
-                    <div class="modal-radio-group">
-                        <div class="modal-radio-item">
-                            <input type="radio" id="pickup-now" name="pickup-time" value="now" checked>
-                            <label for="pickup-now">Up to 30 minutes</label>
-                        </div>
-                        <div class="modal-radio-item">
-                            <input type="radio" id="pickup-later" name="pickup-time" value="later">
-                            <label for="pickup-later">Schedule for later</label>
-                        </div>
-                    </div>
-                </div>
-                <div id="schedule-options">
-                    <div id="schedule-inputs" class="modal-form-group" style="display: flex; gap: 20px;">
-                        <div style="flex: 1;">
-                            <label for="pickup-date">Date</label>
-                            <select id="pickup-date" class="modal-select">
-                                <option>Today</option>
-                                <option>Tomorrow</option>
-                            </select>
-                        </div>
-                        <div style="flex: 1;">
-                            <label for="pickup-time-select">Time</label>
-                             <select id="pickup-time-select" class="modal-select">
-                                <option>3:45 AM</option>
-                                <option>4:00 AM</option>
-                                <option>4:15 AM</option>
-                                <option>4:30 AM</option>
-                                <option>4:45 AM</option>
-                                <option>5:00 AM</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                 <button class="modal-btn-save">Save</button>
-            </div>
-
-            <!-- Delivery Content Pane -->
-            <div id="delivery-content" class="modal-tab-content">
-                 <div class="modal-form-group">
-                    <label for="delivery-address">Deliver to:</label>
-                    <input type="text" id="delivery-address" class="modal-input" placeholder="Type in your delivery address">
-                </div>
-                <button class="modal-btn-save">Save</button>
-            </div>
-        </div>
-    </div>
-    <div class="chat-button"><i class="fa-solid fa-comment-dots"></i> Let's Chat!</div>
-{% endblock extra_elements %}

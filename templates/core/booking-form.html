@@ -1,7 +1,9 @@
+<!-- In templates/core/booking-form.html -->
+
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Sugar & Spice - Booking Form{% endblock title %}
+{% block title %}Sugar & Spice - Your Details{% endblock title %}
 
 {% block content %}
 <main>
@@ -47,14 +49,12 @@
                 </form>
             </div>
 
-            <!-- Booking Details Column -->
+            <!-- Booking Summary Column -->
             <div class="booking-summary-column">
                 <h3>Booking Summary</h3>
                 <p id="summary-service-name" class="summary-item-title"></p>
                 <p id="summary-date-time" class="summary-item-subtitle"></p>
-                
                 <hr class="summary-divider">
-                
                 <p class="summary-payment-title">Payment Details</p>
                 <div class="summary-payment">
                     <div class="summary-total">
@@ -68,11 +68,7 @@
         </div>
     </div>
     <div class="star-divider">
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star-of-life center-star"></i>
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-of-life center-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
     </div>
 </main>
 {% endblock content %}

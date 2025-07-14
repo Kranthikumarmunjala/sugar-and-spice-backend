@@ -1,10 +1,11 @@
+<!-- In templates/core/base.html -->
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- The title will be different for each page -->
     <title>{% block title %}Sugar & Spice{% endblock title %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,6 +20,7 @@
             <a href="{% url 'login' %}" class="login-link"><i class="fa-solid fa-user"></i> Log In</a>
             <a href="{% url 'cart' %}" id="cart-icon-link" class="cart-link">
                 <i class="fa-solid fa-bag-shopping"></i>
+                <!-- Cart item count will be added here by JS -->
             </a>
         </header>
 
@@ -34,7 +36,6 @@
 
         <nav class="main-nav">
             <ul>
-                <!-- Note: The 'active' class is handled in each child template -->
                 <li><a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">HOME</a></li>
                 <li><a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">ABOUT US</a></li>
                 <li><a href="{% url 'menu' %}" class="{% if request.resolver_match.url_name == 'menu' %}active{% endif %}">MENU</a></li>
@@ -44,8 +45,8 @@
             </ul>
         </nav>
 
-        <!-- This is where the unique content of each page will go -->
         {% block content %}
+        <!-- Unique page content goes here -->
         {% endblock content %}
 
     </div>
@@ -54,13 +55,9 @@
         <p>© 2035 by SUGAR & SPICE. Powered and secured by <a href="https://www.wix.com" target="_blank">Wix</a></p>
     </footer>
     
-    <!-- These elements are on every page -->
+    <!-- Cart elements are on every page for global access -->
     <div class="cart-overlay"></div>
     <aside class="cart-sidebar"></aside>
-
-    <!-- This block is for pages that have extra elements, like modals -->
-    {% block extra_elements %}
-    {% endblock extra_elements %}
 
     <script src="{% static 'js/main.js' %}"></script>
 </body>

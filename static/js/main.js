@@ -1,6 +1,8 @@
+// In static/js/main.js
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- CART LOGIC (Retained) ---
+    // --- CART LOGIC ---
     const cartOverlay = document.querySelector('.cart-overlay');
     const cartSidebar = document.querySelector('.cart-sidebar');
     const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
@@ -110,66 +112,60 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     };
-    if (cartOverlay || cartSidebar || addToCartButtons.length > 0 || fullPageCartList) {
-        document.body.addEventListener('click', (e) => {
-            if (e.target.matches('#cart-icon-link') || e.target.parentElement.matches('#cart-icon-link')) {
-                e.preventDefault();
-                openCart();
-            }
-            if (e.target.classList.contains('cart-close-btn') || e.target.classList.contains('cart-overlay')) closeCart();
-            if (e.target.matches('.quantity-btn')) updateQuantity(e.target.dataset.id, parseInt(e.target.dataset.change, 10));
-            if (e.target.closest('.cart-item-remove-btn')) removeItem(e.target.closest('.cart-item-remove-btn').dataset.id);
+
+    document.body.addEventListener('click', (e) => {
+        const cartIcon = e.target.closest('#cart-icon-link');
+        if (cartIcon) {
+            e.preventDefault();
+            openCart();
+        }
+        if (e.target.classList.contains('cart-close-btn') || e.target.classList.contains('cart-overlay')) closeCart();
+        if (e.target.matches('.quantity-btn')) updateQuantity(e.target.dataset.id, parseInt(e.target.dataset.change, 10));
+        if (e.target.closest('.cart-item-remove-btn')) removeItem(e.target.closest('.cart-item-remove-btn').dataset.id);
+    });
+    
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            const { id, name, price, image } = e.target.dataset;
+            addToCart({ id, name: name, price: parseFloat(price), image: image });
+            openCart();
         });
-        addToCartButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                const { id, name, price, image } = e.target.dataset;
-                addToCart({ id, name, price: parseFloat(price), image: image });
-                openCart();
-            });
-        });
-    }
+    });
+    
     const promoLink = document.getElementById('promo-link');
     if (promoLink) promoLink.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('promo-input-container').classList.toggle('hidden'); });
     const noteLink = document.getElementById('note-link');
     if (noteLink) noteLink.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('note-input-container').classList.toggle('hidden'); });
+    
     updateCartUI();
     
-
     // --- HOMEPAGE SLIDER ---
     const heroSlides = document.querySelectorAll('.hero-slide');
     if (heroSlides.length > 0) {
-        let currentSlideIndex = Array.from(heroSlides).findIndex(slide => slide.classList.contains('active'));
-        if (currentSlideIndex === -1) { 
-            currentSlideIndex = 0;
-            heroSlides[0].classList.add('active');
-        }
+        let currentSlideIndex = 0;
+        heroSlides[0].classList.add('active');
 
         const showNextSlide = () => {
             const previousSlideIndex = currentSlideIndex;
             currentSlideIndex = (currentSlideIndex + 1) % heroSlides.length;
             
-            const previousSlide = heroSlides[previousSlideIndex];
-            const newActiveSlide = heroSlides[currentSlideIndex];
-            
-            previousSlide.classList.add('previous');
-            previousSlide.classList.remove('active');
-            newActiveSlide.classList.add('active');
+            heroSlides[previousSlideIndex].classList.add('previous');
+            heroSlides[previousSlideIndex].classList.remove('active');
+            heroSlides[currentSlideIndex].classList.add('active');
             
             setTimeout(() => {
-                previousSlide.classList.remove('previous');
-            }, 1000); // Match CSS transition
+                heroSlides[previousSlideIndex].classList.remove('previous');
+            }, 1000);
         };
-
-        setInterval(showNextSlide, 3000); // Scroll every 3 seconds
+        setInterval(showNextSlide, 3000);
     }
 
     // --- GALLERY SCROLLER ---
     const gallerySection = document.querySelector('.gallery-section');
     if (gallerySection) {
-        const numOriginalItems = 5; // The number of unique images
-        const itemWidth = 180 + 10; // Image width + gap
+        const numOriginalItems = 5;
+        const itemWidth = 180 + 10;
         let galleryIndex = 0;
-        
         gallerySection.style.transition = 'transform 0.5s ease-in-out';
 
         const scrollGallery = () => {
@@ -181,91 +177,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     gallerySection.style.transition = 'none';
                     galleryIndex = 0;
                     gallerySection.style.transform = 'translateX(0)';
-                    void gallerySection.offsetWidth; // Force reflow
+                    void gallerySection.offsetWidth;
                     gallerySection.style.transition = 'transform 0.5s ease-in-out';
-                }, 500); // Match CSS transition
+                }, 500);
             }
         };
-
-        setInterval(scrollGallery, 2500); // Scroll every 2.5 seconds
+        setInterval(scrollGallery, 2500);
     }
-
-    // --- ORDER TYPE MODAL LOGIC ---
-    const orderModalOverlay = document.getElementById('order-type-modal-overlay');
-const orderModal = document.getElementById('order-type-modal');
-if (orderModal) {
-    const modalTriggers = document.querySelectorAll('[data-modal-trigger]');
-    const closeBtn = document.getElementById('modal-close-btn');
-    const modalTabs = document.querySelectorAll('.modal-tab-btn');
-    const tabContents = document.querySelectorAll('.modal-tab-content');
-    const pickupTimeRadios = document.querySelectorAll('input[name="pickup-time"]');
-    const scheduleOptions = document.getElementById('schedule-options');
-
-    const openModal = (mode) => {
-        // First, set the correct tab to be active
-        switchTab(mode);
-        // Then, show the modal
-        orderModalOverlay.style.display = 'block';
-        orderModal.style.display = 'block';
-    };
-
-    const closeModal = () => {
-        orderModalOverlay.style.display = 'none';
-        orderModal.style.display = 'none';
-    };
-
-    const switchTab = (mode) => {
-        modalTabs.forEach(tab => {
-            tab.classList.remove('active');
-            if (tab.dataset.tab === mode) {
-                tab.classList.add('active');
-            }
-        });
-        tabContents.forEach(content => {
-            content.classList.remove('active');
-            if (content.id === `${mode}-content`) {
-                content.classList.add('active');
-            }
-        });
-    };
-
-    modalTriggers.forEach(trigger => {
-        trigger.addEventListener('click', (e) => {
-            e.preventDefault();
-            // Open the modal and switch to the tab specified by the button (e.g., 'pickup' or 'delivery')
-            openModal(trigger.dataset.modalTrigger);
-        });
-    });
-
-    modalTabs.forEach(tab => {
-        tab.addEventListener('click', () => switchTab(tab.dataset.tab));
-    });
-
-    const handlePickupRadioChange = () => {
-        // Check if the 'later' radio button is checked
-        const shouldShow = document.querySelector('input[name="pickup-time"]:checked').value === 'later';
-        // Show or hide the schedule options accordingly
-        scheduleOptions.style.display = shouldShow ? 'block' : 'none';
-    };
-
-    pickupTimeRadios.forEach(radio => {
-        radio.addEventListener('change', handlePickupRadioChange);
-    });
-
-    // Run once on load to set the initial state
-    handlePickupRadioChange();
-
-    closeBtn.addEventListener('click', closeModal);
-    orderModalOverlay.addEventListener('click', closeModal);
-}
 
     // --- BOOKING FLOW LOGIC ---
 
-    // 1. Listen for clicks on "Book a Workshop" links on workshops.html
+    // 1. Save selected workshop details when "Book Now" is clicked
     const bookNowLinks = document.querySelectorAll('.book-now-link');
     bookNowLinks.forEach(link => {
         link.addEventListener('click', (e) => {
-            // Note: We don't preventDefault here because we want the link to navigate
             const workshopData = {
                 name: e.currentTarget.dataset.name,
                 duration: e.currentTarget.dataset.duration,
@@ -279,7 +204,6 @@ if (orderModal) {
     if (document.getElementById('calendar-days-grid')) {
         const workshop = JSON.parse(localStorage.getItem('selectedWorkshop'));
         if (!workshop) {
-            // If the user lands here directly, guide them back.
             const availabilityPanel = document.querySelector('.availability-panel');
             if (availabilityPanel) {
                 availabilityPanel.innerHTML = '<h3>No Workshop Selected</h3><p>Please <a href="/workshops/">go back to the workshops page</a> and select a workshop to book.</p>';
@@ -295,19 +219,19 @@ if (orderModal) {
         const serviceDetailsSection = document.getElementById('service-details-section');
         const nextButton = document.getElementById('next-button');
 
-        let currentDate = new Date(2025, 6, 1); // Start in July 2025
+        let currentDate = new Date(2025, 6, 1); // Start in July 2025 for demo
         let selectedDate = null;
         let selectedTime = null;
 
         const availabilityData = {
             "2025-07-09": ["10:00 AM", "11:00 AM", "02:00 PM"],
-            "2025-07-14": ["03:00 PM - 04:00 PM"],
-            "2025-07-16": ["10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM"],
-            "2025-07-21": ["04:00 PM - 05:00 PM"],
-            "2025-07-23": ["10:00 AM - 11:00 AM"],
-            "2025-07-28": ["11:00 AM - 12:00 PM"],
-            "2025-07-30": ["02:00 PM - 03:00 PM"],
-            "2025-08-05": ["10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM"],
+            "2025-07-14": ["03:00 PM"],
+            "2025-07-16": ["10:00 AM", "11:00 AM"],
+            "2025-07-21": ["04:00 PM"],
+            "2025-07-23": ["10:00 AM"],
+            "2025-07-28": ["11:00 AM"],
+            "2025-07-30": ["02:00 PM"],
+            "2025-08-05": ["10:00 AM", "11:00 AM"],
         };
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -328,7 +252,7 @@ if (orderModal) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                 let classes = 'day';
                 if (availabilityData[dateStr]) classes += ' available';
-                if(selectedDate && selectedDate.getDate() === i && selectedDate.getMonth() === month && selectedDate.getFullYear() === year) {
+                if(selectedDate && selectedDate.getDate() === i && selectedDate.getMonth() === month) {
                     classes += ' selected';
                 }
                 daysGrid.innerHTML += `<div class="${classes}" data-date="${i}">${i}</div>`;
@@ -339,35 +263,36 @@ if (orderModal) {
             selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), date);
             const dateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
             const dayName = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
-            const monthName = monthNames[selectedDate.getMonth()];
+            
+            document.getElementById('availability-title').innerHTML = `Availability for ${dayName}, ${monthNames[selectedDate.getMonth()]} ${date}`;
             
             const times = availabilityData[dateStr];
-            
-            document.getElementById('availability-title').innerHTML = `Availability for ${dayName}, ${monthName} ${date}`;
-            
-            let slotContent = '';
             if (times && times.length > 0) {
-                slotContent += times.map(time => `<button class="time-slot" data-time="${time}">${time}</button>`).join('');
+                availabilitySlots.innerHTML = times.map(time => `<button class="time-slot" data-time="${time}">${time}</button>`).join('');
             } else {
-                slotContent += `<p class="availability-placeholder">No availability for this date.</p>`;
-                slotContent += `<button class="check-availability-btn" style="width: 100%; margin-top: 10px; padding: 10px; background-color: var(--text-color); color: white; border: none; cursor: pointer;">Check Next Availability</button>`;
+                availabilitySlots.innerHTML = `<p class="availability-placeholder">No availability for this date.</p>`;
             }
-            availabilitySlots.innerHTML = slotContent;
         };
         
-        const resetForNewDay = () => {
+        const resetSelection = () => {
+             selectedDate = null;
              selectedTime = null;
              nextButton.disabled = true;
              serviceDetailsSection.classList.add('hidden');
-             availabilitySlots.innerHTML = '';
+             availabilitySlots.innerHTML = '<p class="availability-placeholder">Please select a date to see availability.</p>';
              document.querySelectorAll('.day.selected').forEach(d => d.classList.remove('selected'));
         }
 
         daysGrid.addEventListener('click', (e) => {
-            if (e.target.classList.contains('day') && !e.target.classList.contains('other-month')) {
-                resetForNewDay();
+            if (e.target.classList.contains('day') && !e.target.classList.contains('other-month') && e.target.classList.contains('available')) {
+                document.querySelectorAll('.day.selected').forEach(d => d.classList.remove('selected'));
                 e.target.classList.add('selected');
                 updateAvailabilityPanel(parseInt(e.target.dataset.date, 10));
+                
+                // Reset time selection
+                selectedTime = null;
+                nextButton.disabled = true;
+                serviceDetailsSection.classList.add('hidden');
             }
         });
 
@@ -378,16 +303,13 @@ if (orderModal) {
                 selectedTime = e.target.dataset.time;
         
                 const formattedDate = selectedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-                document.getElementById('service-name-details').textContent = workshop.name;
+                // document.getElementById('service-name-details').textContent = workshop.name;
                 document.getElementById('service-price-details').textContent = workshop.price;
                 document.getElementById('service-datetime-details').textContent = `${formattedDate} at ${selectedTime}`;
-                document.getElementById('service-location-details').textContent = workshop.location || "San Francisco";
-                document.getElementById('service-staff-details').textContent = workshop.staff || "Staff Member #1";
                 document.getElementById('service-duration-details').textContent = workshop.duration;
                 
                 serviceDetailsSection.classList.remove('hidden');
                 nextButton.disabled = false;
-        
             }
         });
 
@@ -403,8 +325,8 @@ if (orderModal) {
             }
         });
 
-        prevMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); resetForNewDay(); });
-        nextMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); resetForNewDay(); });
+        prevMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); resetSelection(); });
+        nextMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); resetSelection(); });
         
         renderCalendar();
     }
@@ -417,6 +339,7 @@ if (orderModal) {
             document.getElementById('summary-date-time').textContent = `${bookingDetails.date}, ${bookingDetails.time}`;
             document.getElementById('summary-price').textContent = bookingDetails.price;
         } else {
+            // If user lands here without booking details, redirect them
             window.location.href = '/workshops/';
         }
     }
