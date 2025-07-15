@@ -1,64 +1,80 @@
-<!-- In templates/core/base.html -->
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Sugar & Spice{% endblock title %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>{% block title %}{% if base_config %}{{ base_config.title }}{% else %}Sugar & Spice{% endif %}{% endblock title %}</title>
+   <link rel="stylesheet" href="{% static 'css/style.css' %}">
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 </head>
 <body>
-
-    <div class="container">
-        <header class="top-header">
-            <a href="{% url 'login' %}" class="login-link"><i class="fa-solid fa-user"></i> Log In</a>
-            <a href="{% url 'cart' %}" id="cart-icon-link" class="cart-link">
-                <i class="fa-solid fa-bag-shopping"></i>
-                <!-- Cart item count will be added here by JS -->
-            </a>
-        </header>
-
-        <a href="{% url 'home' %}" class="logo-link">
-            <section class="logo-section">
-                <img src="{% static 'images/spice_logo.png' %}" alt="Sugar & Spice Logo" class="logo-img">
-                <div class="logo-text">
-                    <h1>SUGAR & SPICE</h1>
-                    <p>And All Things Nice</p>
+    {% if messages %}
+        <div class="messages" style="list-style: none; padding: 10px; margin: 0; text-align: center;">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" style="padding: 15px; margin-bottom: 10px; border-radius: 5px; color: #fff; background-color: {% if message.tags == 'success' %}#28a745{% else %}#dc3545{% endif %};">
+                    {{ message }}
                 </div>
-            </section>
-        </a>
+            {% endfor %}
+        </div>
+    {% endif %}
 
-        <nav class="main-nav">
-            <ul>
-                <li><a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">HOME</a></li>
-                <li><a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">ABOUT US</a></li>
-                <li><a href="{% url 'menu' %}" class="{% if request.resolver_match.url_name == 'menu' %}active{% endif %}">MENU</a></li>
-                <li><a href="{% url 'order-online' %}" class="{% if request.resolver_match.url_name == 'order-online' %}active{% endif %}">ORDER ONLINE</a></li>
-                <li><a href="{% url 'contact' %}" class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">CONTACT</a></li>
-                <li><a href="{% url 'workshops' %}" class="{% if request.resolver_match.url_name == 'workshops' or request.resolver_match.url_name == 'booking-calendar' or request.resolver_match.url_name == 'booking-form' %}active{% endif %}">WORKSHOPS</a></li>
-            </ul>
-        </nav>
+   <div class="container">
+       <header class="top-header">
+           {% if user.is_authenticated %}
+               <span style="margin-right: 15px;">Hi, {{ user.first_name|default:user.username }}</span>
+               <a href="{% url 'logout' %}" class="login-link"><i class="fa-solid fa-right-from-bracket"></i> Log Out</a>
+           {% else %}
+               <a href="{% url 'login' %}" class="login-link"><i class="fa-solid fa-user"></i> Log In</a>
+           {% endif %}
+           <a href="{% url 'cart' %}" id="cart-icon-link" class="cart-link">
+               <i class="fa-solid fa-bag-shopping"></i>
+               <!-- Cart count added by JS -->
+           </a>
+       </header>
 
-        {% block content %}
-        <!-- Unique page content goes here -->
-        {% endblock content %}
+       <!-- This entire section is now wrapped in an `if` block -->
+       {% if base_config %}
+            <a href="{% url 'home' %}" class="logo-link">
+                <section class="logo-section">
+                    {% if base_config.logo %}
+                        <img src="{{ base_config.logo.url }}" alt="{{ base_config.title }} Logo" class="logo-img">
+                    {% endif %}
+                    <div class="logo-text">
+                        <h1>{{ base_config.title }}</h1>
+                        <p>{{ base_config.subtitle }}</p>
+                    </div>
+                </section>
+            </a>
+       {% endif %}
 
-    </div>
-    
-    <footer class="site-footer">
-        <p>© 2035 by SUGAR & SPICE. Powered and secured by <a href="https://www.wix.com" target="_blank">Wix</a></p>
-    </footer>
-    
-    <!-- Cart elements are on every page for global access -->
-    <div class="cart-overlay"></div>
-    <aside class="cart-sidebar"></aside>
+       <nav class="main-nav">
+           <ul>
+               <li><a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">HOME</a></li>
+               <li><a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">ABOUT US</a></li>
+               <li><a href="{% url 'menu' %}" class="{% if request.resolver_match.url_name == 'menu' %}active{% endif %}">MENU</a></li>
+               <li><a href="{% url 'order-online' %}" class="{% if request.resolver_match.url_name == 'order-online' %}active{% endif %}">ORDER ONLINE</a></li>
+               <li><a href="{% url 'contact' %}" class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">CONTACT</a></li>
+               <li><a href="{% url 'workshops' %}" class="{% if request.resolver_match.url_name in 'workshops,booking-calendar,booking-form' %}active{% endif %}">WORKSHOPS</a></li>
+           </ul>
+       </nav>
 
-    <script src="{% static 'js/main.js' %}"></script>
+       {% block content %}
+       <!-- Unique page content goes here -->
+       {% endblock content %}
+   </div>
+  
+   <footer class="site-footer">
+       <!-- The site name in the footer is now dynamic -->
+       <p>© 2035 by {% if base_config %}{{ base_config.title }}{% else %}SUGAR & SPICE{% endif %}. Powered and secured by <a href="https://www.wix.com" target="_blank">Wix</a></p>
+   </footer>
+  
+   <div class="cart-overlay"></div>
+   <aside class="cart-sidebar"></aside>
+
+   <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

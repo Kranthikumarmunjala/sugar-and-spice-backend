@@ -1,58 +1,79 @@
-<!-- In templates/core/contact.html -->
-
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Sugar & Spice - Contact{% endblock title %}
+{% block title %}{% if base_config %}{{ base_config.title }}{% endif %} - Contact Us{% endblock title %}
 
 {% block content %}
 <main>
-    <section class="content-page-section contact-page">
-        <div class="content-image">
-            <img src="{% static 'images/SUGAR-FREE CHOCOLATE VANILA.png' %}" alt="Red velvet cupcake">
-        </div>
-        <div class="content-text contact-details">
-            <h2>CONTACT US</h2>
-            <div class="contact-info">
-                <p>500 Prashanth Nagar Colony,Hanamkonda, CA 94158</p>
-                <p>Drivesync@mysite.com | 123-456-7890</p>
-                <p>We want to hear from you, write us:</p>
-            </div>
+   {# The message display area is now handled by base.html, so it doesn't need to be here. #}
+   {# However, if you want it ONLY on this page, you can uncomment the block below. #}
+   {#
+   {% if messages %}
+       <div class="messages" style="text-align: center; padding: 10px;">
+           {% for message in messages %}
+               <div class="alert alert-{{ message.tags }}" style="padding: 15px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 5px;">
+                   {{ message }}
+               </div>
+           {% endfor %}
+       </div>
+   {% endif %}
+   #}
 
-            <form class="contact-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="contact-first-name">First name *</label>
-                        <input type="text" id="contact-first-name" name="first-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="contact-last-name">Last name *</label>
-                        <input type="text" id="contact-last-name" name="last-name" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="contact-email">Email *</label>
-                    <input type="email" id="contact-email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="contact-phone">Phone</label>
-                    <input type="tel" id="contact-phone" name="phone">
-                </div>
-                <div class="form-group">
-                    <label for="contact-message">Type your message here...</label>
-                    <textarea id="contact-message" name="message" rows="5"></textarea>
-                </div>
-                <button type="submit" class="submit-btn">Submit</button>
-            </form>
-        </div>
-    </section>
-    
-    <section class="map-section" id="map-section">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.317999849204!2d-122.40141352467145!3d37.78216397198188!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808580881c13d7d1%3A0x45f5a82869408611!2s500%20Terry%20A%20Francois%20Blvd%2C%20San%20Francisco%2C%20CA%2094158%2C%20USA!5e0!3m2!1sen!2sca!4v1666635836025!5m2!1sen!2sca" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </section>
-    
-    <div class="star-divider">
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-of-life center-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-    </div>
+   {% if contact_config %}
+   <section class="content-page-section contact-page">
+       <div class="content-image">
+           {% if contact_config.image %}
+               <img src="{{ contact_config.image.url }}" alt="{{ contact_config.title }}">
+           {% endif %}
+       </div>
+       <div class="content-text contact-details">
+           <h2>{{ contact_config.title }}</h2>
+           <div class="contact-info">
+               <p>{{ contact_config.address }}</p>
+               <p>{{ contact_config.site_email }} | {{ contact_config.phone }}</p>
+               <p>{{ contact_config.text }}</p>
+           </div>
+
+           <form class="contact-form" method="POST" action="{% url 'contact' %}">
+               {% csrf_token %}
+               <div class="form-row">
+                   <div class="form-group">
+                       <label for="contact-first-name">First name *</label>
+                       <input type="text" id="contact-first-name" name="first-name" required>
+                   </div>
+                   <div class="form-group">
+                       <label for="contact-last-name">Last name *</label>
+                       <input type="text" id="contact-last-name" name="last-name" required>
+                   </div>
+               </div>
+               <div class="form-group">
+                   <label for="contact-email">Email *</label>
+                   <input type="email" id="contact-email" name="email" required>
+               </div>
+               <div class="form-group">
+                   <label for="contact-phone">Phone</label>
+                   <input type="tel" id="contact-phone" name="phone">
+               </div>
+               <div class="form-group">
+                   <label for="contact-message">Type your message here...</label>
+                   <textarea id="contact-message" name="message" rows="5"></textarea>
+               </div>
+               <button type="submit" class="submit-btn">Submit</button>
+           </form>
+       </div>
+   </section>
+  
+   <section class="map-section" id="map-section">
+        {% if contact_config.map_url %}
+            <iframe src="{{ contact_config.map_url }}" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        {% endif %}
+   </section>
+   {% else %}
+    <p style="text-align:center; padding: 40px;">Contact page content has not been configured in the admin panel.</p>
+   {% endif %}
+   
+   <div class="star-divider">
+       <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-of-life center-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+   </div>
 </main>
 {% endblock content %}

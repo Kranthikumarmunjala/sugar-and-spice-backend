@@ -1,55 +1,50 @@
-<!-- In templates/core/order-online.html -->
-
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Sugar & Spice - Order Online{% endblock title %}
+{% block title %}{% if base_config %}{{ base_config.title }}{% endif %} - Order Online{% endblock title %}
 
 {% block content %}
 <main>
-    <section class="hero-section">
-        <img src="{% static 'images/cupcake.jpg' %}" alt="Chocolate cupcake" class="hero-image">
-    </section>
-    
-    <div class="order-page-content">
-        <h2 class="order-title">Order Online</h2>
-        <p class="order-subtitle">You can order online! Browse our menu items and choose what you'd like to order from us.</p>
+   {% if order_config %}
+   <section class="hero-section">
+       {% if order_config.image %}
+            <img src="{{ order_config.image.url }}" alt="{{ order_config.title }}" class="hero-image">
+       {% endif %}
+   </section>
+  
+   <div class="order-page-content">
+       <h2 class="order-title">{{ order_config.title }}</h2>
+       <p class="order-subtitle">{{ order_config.description }}</p>
 
-        <div class="order-menu-header">
-            <div class="menu-tabs">
-                <a href="#" class="menu-tab-link active">FLAVORS</a>
-            </div>
-            <a href="{% url 'cart' %}" class="view-cart-btn">View Cart</a>
-        </div>
-        
-        <h2 class="menu-flavors-title">FLAVORS</h2>
-        <div class="menu-grid">
-            <div class="menu-item">
-                <img src="{% static 'images/CLASSIC RED VELVET.png' %}" alt="Classic Red Velvet">
-                <h4>CLASSIC RED VELVET</h4>
-                <p class="description">A timeless classic with a moist, velvety crumb and a rich cream cheese frosting.</p>
-                <p class="price">$9.00</p>
-                <button class="add-to-cart-btn" data-id="crv" data-name="CLASSIC RED VELVET" data-price="9.00" data-image="{% static 'images/CLASSIC RED VELVET.png' %}">Add to Cart</button>
-            </div>
-            <div class="menu-item">
-                <img src="{% static 'images/CHOCOLATE VANILA.png' %}" alt="Chocolate Vanilla">
-                <h4>CHOCOLATE VANILLA</h4>
-                <p class="description">Rich chocolate cake topped with a light and fluffy vanilla bean buttercream.</p>
-                <p class="price">$9.00</p>
-                <button class="add-to-cart-btn" data-id="cv" data-name="CHOCOLATE VANILLA" data-price="9.00" data-image="{% static 'images/CHOCOLATE VANILA.png' %}">Add to Cart</button>
-            </div>
-            <div class="menu-item">
-                <img src="{% static 'images/DOUBLE CHOCOLATE.png' %}" alt="Double Chocolate">
-                <h4>DOUBLE CHOCOLATE</h4>
-                <p class="description">For the ultimate chocolate lover. Decadent chocolate cake with a silky chocolate ganache frosting.</p>
-                <p class="price">$9.00</p>
-                <button class="add-to-cart-btn" data-id="dc" data-name="DOUBLE CHOCOLATE" data-price="9.00" data-image="{% static 'images/DOUBLE CHOCOLATE.png' %}">Add to Cart</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="star-divider">
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-of-life center-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-    </div>
+       <div class="order-menu-header">
+           <div class="menu-tabs"></div>
+           <a href="{% url 'cart' %}" class="view-cart-btn">View Cart</a>
+       </div>
+      
+       <h2 class="menu-flavors-title">{{ order_config.subtitle }}</h2>
+       <div class="menu-grid">
+           {% for item in order_items %}
+           <div class="menu-item">
+               {% if item.image %}<img src="{{ item.image.url }}" alt="{{ item.name }}">{% endif %}
+               <h4>{{ item.name }}</h4>
+               <p class="description">{{ item.description }}</p>
+               <p class="price">${{ item.price }}</p>
+               <button class="add-to-cart-btn" 
+                   data-id="{{ item.id }}" 
+                   data-name="{{ item.name }}" 
+                   data-price="{{ item.price }}" 
+                   data-image="{% if item.image %}{{ item.image.url }}{% endif %}">
+                   Add to Cart
+               </button>
+           </div>
+           {% empty %}
+            <p>No items available for online order at the moment.</p>
+           {% endfor %}
+       </div>
+   </div>
+   {% else %}
+    <p class="text-center p-5">The online ordering page has not been configured.</p>
+   {% endif %}
+   <div class="star-divider"><!-- ... stars ... --></div>
 </main>
 {% endblock content %}
