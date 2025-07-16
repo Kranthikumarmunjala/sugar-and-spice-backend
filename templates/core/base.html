@@ -4,7 +4,7 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>{% block title %}{% if base_config %}{{ base_config.title }}{% else %}Sugar & Spice{% endif %}{% endblock title %}</title>
+   <title>{% block title %}{% if site_config %}{{ site_config.logo_title }}{% else %}Sugar & Spice{% endif %}{% endblock title %}</title>
    <link rel="stylesheet" href="{% static 'css/style.css' %}">
    <link rel="preconnect" href="https://fonts.googleapis.com">
    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,16 +36,15 @@
            </a>
        </header>
 
-       <!-- This entire section is now wrapped in an `if` block -->
-       {% if base_config %}
+       {% if site_config %}
             <a href="{% url 'home' %}" class="logo-link">
                 <section class="logo-section">
-                    {% if base_config.logo %}
-                        <img src="{{ base_config.logo.url }}" alt="{{ base_config.title }} Logo" class="logo-img">
+                    {% if site_config.logo %}
+                        <img src="{{ site_config.logo.url }}" alt="{{ site_config.logo_title }} Logo" class="logo-img">
                     {% endif %}
                     <div class="logo-text">
-                        <h1>{{ base_config.title }}</h1>
-                        <p>{{ base_config.subtitle }}</p>
+                        <h1>{{ site_config.logo_title }}</h1>
+                        <p>{{ site_config.logo_subtitle }}</p>
                     </div>
                 </section>
             </a>
@@ -68,8 +67,7 @@
    </div>
   
    <footer class="site-footer">
-       <!-- The site name in the footer is now dynamic -->
-       <p>© 2035 by {% if base_config %}{{ base_config.title }}{% else %}SUGAR & SPICE{% endif %}. Powered and secured by <a href="https://www.wix.com" target="_blank">Wix</a></p>
+       <p>© 2035 by {% if site_config %}{{ site_config.logo_title }}{% else %}SUGAR & SPICE{% endif %}. Powered and secured by <a href="https://www.wix.com" target="_blank">Wix</a></p>
    </footer>
   
    <div class="cart-overlay"></div>

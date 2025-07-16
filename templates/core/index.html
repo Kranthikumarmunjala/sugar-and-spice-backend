@@ -1,60 +1,66 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}{% if base_config %}{{ base_config.title }}{% endif %} - Home{% endblock title %}
+{% block title %}{% if site_config %}{{ site_config.logo_title }}{% endif %} - Home{% endblock title %}
 
 {% block content %}
 <main>
-   <section class="hero-section">
-       {% for slide in slides %}
-           <div class="hero-slide">
-               <img src="{{ slide.image.url }}" alt="Hero slide image">
-           </div>
-       {% empty %}
-           <p class="text-center p-5">No slides have been configured in the admin panel.</p>
-       {% endfor %}
-   </section>
+    <section class="hero-section">
+        {% for image_obj in home_images %}
+            <div class="hero-slide">
+                <img src="{{ image_obj.image.url }}" alt="Hero slide image for {{ site_config.logo_title | default:'our bakery' }}">
+            </div>
+        {% empty %}
+            <div class="hero-slide" style="display: flex; align-items: center; justify-content: center; background-color: #f0f0f0;">
+                <p class="text-center p-5">No hero images have been configured in the admin panel.</p>
+            </div>
+        {% endfor %}
+    </section>
 
-   <div class="gallery-container">
-       <section class="gallery-section">
-           {% for item in gallery_images %}
-               <div class="gallery-item"><img src="{{ item.image.url }}" alt="Gallery image"></div>
-           {% endfor %}
-           {% for item in gallery_images %}
-               <div class="gallery-item"><img src="{{ item.image.url }}" alt="Gallery image (loop)"></div>
-           {% endfor %}
-       </section>
-   </div>
+    <div class="gallery-container">
+        <section class="gallery-section">
+            {% for image_obj in home_images %}
+                <div class="gallery-item"><img src="{{ image_obj.image.url }}" alt="Gallery image"></div>
+            {% endfor %}
+            {% for image_obj in home_images %}
+                <div class="gallery-item"><img src="{{ image_obj.image.url }}" alt="Gallery image (for scroll animation)"></div>
+            {% endfor %}
+        </section>
+    </div>
 
-   <div class="star-divider"><!-- ... stars ... --></div>
+    <div class="star-divider"><!-- stars --></div>
 
-   <section class="info-section">
-       <div class="info-item">
-           <i class="fa-solid fa-cake-candles icon-large"></i>
-           <h3>LIKE & FOLLOW</h3>
-           {% if social_links %}
-           <div class="social-icons">
-               {% if social_links.instagram %}
-                   <a href="{{ social_links.instagram }}" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-               {% endif %}
-               {% if social_links.facebook %}
-                   <a href="{{ social_links.facebook }}" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
-               {% endif %}
-           </div>
-           {% endif %}
-       </div>
-       <div class="info-item">
-           <i class="fa-solid fa-ice-cream icon-large"></i>
-           <h3>OUR MENU</h3>
-           <a href="{% url 'menu' %}" class="info-link">Click Here</a>
-       </div>
-       <div class="info-item">
-           <i class="fa-solid fa-gifts icon-large"></i>
-           <h3>COME VISIT US</h3>
-           <a href="{% url 'contact' %}#map-section" class="info-link">View Map</a>
-       </div>
-   </section>
+    <section class="info-section">
+        <div class="info-item">
+            <i class="fa-solid fa-cake-candles icon-large"></i>
+            <h3>LIKE & FOLLOW</h3>
+            {% if site_config %}
+                <div class="social-icons">
+                    {% if site_config.instragram %}
+                        <a href="{{ site_config.instragram }}" target="_blank" aria-label="Follow us on Instagram">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                    {% endif %}
+                    {% if site_config.facebook %}
+                        <a href="{{ site_config.facebook }}" target="_blank" aria-label="Follow us on Facebook">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="info-item">
+            <i class="fa-solid fa-ice-cream icon-large"></i>
+            <h3>OUR MENU</h3>
+            <a href="{% url 'menu' %}" class="info-link">Click Here</a>
+        </div>
+        <div class="info-item">
+            <i class="fa-solid fa-gifts icon-large"></i>
+            <h3>COME VISIT US</h3>
+            <a href="{% url 'contact' %}#map-section" class="info-link">View Map</a>
+        </div>
+    </section>
 
-   <div class="star-divider"><!-- ... stars ... --></div>
+    <div class="star-divider"><!-- stars --></div>
 </main>
 {% endblock content %}

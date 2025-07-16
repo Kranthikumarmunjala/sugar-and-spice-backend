@@ -1,24 +1,24 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}{% if base_config %}{{ base_config.title }}{% endif %} - About Us{% endblock title %}
+{% block title %}{% if site_config %}{{ site_config.logo_title }}{% endif %} - About Us{% endblock title %}
 
 {% block content %}
 <main>
-   {% if about_config %}
+   {% if site_config %}
    <section class="content-page-section">
        <div class="content-image">
-           {% if about_config.image %}
-               <img src="{{ about_config.image.url }}" alt="{{ about_config.title }}">
+           {% if site_config.about_image %}
+               <img src="{{ site_config.about_image.url }}" alt="{{ site_config.about_title }}">
            {% endif %}
        </div>
        <div class="content-text">
-           <h2>{{ about_config.title }}</h2>
-           {{ about_config.description|linebreaks }}
+           <h2>{{ site_config.about_title }}</h2>
+           <p>{{ site_config.about_description|linebreaks }}</p>
        </div>
    </section>
    {% else %}
-   <p class="text-center p-5">About page content has not been configured in the admin panel.</p>
+   <p class="text-center p-5">Site content has not been configured in the admin panel.</p>
    {% endif %}
    <div class="star-divider"><!-- ... stars ... --></div>
 </main>

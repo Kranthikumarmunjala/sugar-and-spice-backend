@@ -1,9 +1,7 @@
-<!-- In templates/core/booking-form.html -->
-
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Sugar & Spice - Your Details{% endblock title %}
+{% block title %}{% if site_config %}{{ site_config.logo_title }}{% endif %} - Your Details{% endblock title %}
 
 {% block content %}
 <main>
@@ -14,10 +12,12 @@
             <!-- Client Details Column -->
             <div class="client-details-column">
                 <h3>Your Details</h3>
-                 <div class="login-prompt">
+                <div class="login-prompt">
                     Already have an account? <a href="{% url 'login' %}">Log In</a>
                 </div>
-                <form class="booking-details-form">
+                <!-- The form now posts to the correct view -->
+                <form class="booking-details-form" method="POST" action="{% url 'booking-form' %}">
+                    {% csrf_token %}
                     <div class="form-row">
                         <div class="form-group">
                             <label for="first-name">First name</label>
@@ -46,6 +46,8 @@
                         <label for="message">Add your message</label>
                         <textarea id="message" name="message" rows="3"></textarea>
                     </div>
+                     <!-- The final submit button is now inside the form -->
+                    <button type="submit" class="booking-btn-final">Book Now</button>
                 </form>
             </div>
 
@@ -62,8 +64,8 @@
                         <span id="summary-price"></span>
                     </div>
                 </div>
-                 <p class="sms-agreement">By continuing, you agree to be contacted by text message.</p>
-                <button class="booking-btn-final">Book Now</button>
+                <p class="sms-agreement">By continuing, you agree to be contacted by text message.</p>
+                <!-- The original button here is now the form's submit button -->
             </div>
         </div>
     </div>

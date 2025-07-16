@@ -1,20 +1,19 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}{% if base_config %}{{ base_config.title }}{% endif %} - Workshops{% endblock title %}
+{% block title %}{% if site_config %}{{ site_config.logo_title }}{% endif %} - Workshops{% endblock title %}
 
 {% block content %}
 <main>
    <div class="workshops-page-content">
-       {% if work_config %}
-       <h2 class="page-title">{{ work_config.title }}</h2>
+       {% if site_config %}
+       <h2 class="page-title">{{ site_config.workshop_title }}</h2>
        {% endif %}
       
        <div class="workshop-list">
            {% for workshop in workshops %}
            <div class="workshop-item">
                <div class="workshop-image">
-                   {# This now dynamically displays the uploaded image for each workshop #}
                    {% if workshop.image %}
                         <img src="{{ workshop.image.url }}" alt="{{ workshop.name }}">
                    {% endif %}
@@ -35,9 +34,7 @@
            <p style="text-align: center; padding: 20px;">No workshops are currently available.</p>
            {% endfor %}
        </div>
-       <div class="star-divider">
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-of-life center-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-       </div>
+       <div class="star-divider"><!-- stars --></div>
    </div>
 </main>
 {% endblock content %}

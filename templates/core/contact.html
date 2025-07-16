@@ -1,37 +1,23 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}{% if base_config %}{{ base_config.title }}{% endif %} - Contact Us{% endblock title %}
+{% block title %}{% if site_config %}{{ site_config.logo_title }}{% endif %} - Contact Us{% endblock title %}
 
 {% block content %}
 <main>
-   {# The message display area is now handled by base.html, so it doesn't need to be here. #}
-   {# However, if you want it ONLY on this page, you can uncomment the block below. #}
-   {#
-   {% if messages %}
-       <div class="messages" style="text-align: center; padding: 10px;">
-           {% for message in messages %}
-               <div class="alert alert-{{ message.tags }}" style="padding: 15px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 5px;">
-                   {{ message }}
-               </div>
-           {% endfor %}
-       </div>
-   {% endif %}
-   #}
-
-   {% if contact_config %}
+   {% if site_config %}
    <section class="content-page-section contact-page">
        <div class="content-image">
-           {% if contact_config.image %}
-               <img src="{{ contact_config.image.url }}" alt="{{ contact_config.title }}">
+           {% if site_config.contact_image %}
+               <img src="{{ site_config.contact_image.url }}" alt="{{ site_config.contact_title }}">
            {% endif %}
        </div>
        <div class="content-text contact-details">
-           <h2>{{ contact_config.title }}</h2>
+           <h2>{{ site_config.contact_title }}</h2>
            <div class="contact-info">
-               <p>{{ contact_config.address }}</p>
-               <p>{{ contact_config.site_email }} | {{ contact_config.phone }}</p>
-               <p>{{ contact_config.text }}</p>
+               <p>{{ site_config.contact_address }}</p>
+               <p>{{ site_config.contact_site_email }} | {{ site_config.contact_phone }}</p>
+               <p>{{ site_config.contact_text }}</p>
            </div>
 
            <form class="contact-form" method="POST" action="{% url 'contact' %}">
@@ -64,16 +50,14 @@
    </section>
   
    <section class="map-section" id="map-section">
-        {% if contact_config.map_url %}
-            <iframe src="{{ contact_config.map_url }}" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        {% if site_config.contact_map_url %}
+            <iframe src="{{ site_config.contact_map_url }}" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         {% endif %}
    </section>
    {% else %}
-    <p style="text-align:center; padding: 40px;">Contact page content has not been configured in the admin panel.</p>
+    <p style="text-align:center; padding: 40px;">Site content has not been configured in the admin panel.</p>
    {% endif %}
    
-   <div class="star-divider">
-       <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-of-life center-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-   </div>
+   <div class="star-divider"><!-- stars --></div>
 </main>
 {% endblock content %}

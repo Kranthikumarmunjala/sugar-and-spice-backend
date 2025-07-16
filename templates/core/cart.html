@@ -1,9 +1,7 @@
-<!-- In templates/core/cart.html -->
-
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Sugar & Spice - My Cart{% endblock title %}
+{% block title %}{% if site_config %}{{ site_config.logo_title }}{% endif %} - My Cart{% endblock title %}
 
 {% block content %}
 <main>

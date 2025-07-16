@@ -1,14 +1,14 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}{% if base_config %}{{ base_config.title }}{% endif %} - Menu{% endblock title %}
+{% block title %}{% if site_config %}{{ site_config.logo_title }}{% endif %} - Menu{% endblock title %}
 
 {% block content %}
 <main class="menu-page">
    <section class="menu-section">
-       {% if menu_config %}
-       <h3 class="menu-category-title">{{ menu_config.title }}</h3>
-       <h2 class="menu-flavors-title">{{ menu_config.subtitle }}</h2>
+       {% if site_config %}
+       <h3 class="menu-category-title">{{ site_config.menu_title }}</h3>
+       <h2 class="menu-flavors-title">{{ site_config.menu_subtitle }}</h2>
        {% endif %}
       
        <div class="menu-grid">

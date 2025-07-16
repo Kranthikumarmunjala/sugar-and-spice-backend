@@ -1,27 +1,27 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}{% if base_config %}{{ base_config.title }}{% endif %} - Order Online{% endblock title %}
+{% block title %}{% if site_config %}{{ site_config.logo_title }}{% endif %} - Order Online{% endblock title %}
 
 {% block content %}
 <main>
-   {% if order_config %}
+   {% if site_config %}
    <section class="hero-section">
-       {% if order_config.image %}
-            <img src="{{ order_config.image.url }}" alt="{{ order_config.title }}" class="hero-image">
+       {% if site_config.oredr_online_image %}
+            <img src="{{ site_config.oredr_online_image.url }}" alt="{{ site_config.order_online_title }}" class="hero-image">
        {% endif %}
    </section>
   
    <div class="order-page-content">
-       <h2 class="order-title">{{ order_config.title }}</h2>
-       <p class="order-subtitle">{{ order_config.description }}</p>
+       <h2 class="order-title">{{ site_config.order_online_title }}</h2>
+       <p class="order-subtitle">{{ site_config.order_online_description }}</p>
 
        <div class="order-menu-header">
            <div class="menu-tabs"></div>
            <a href="{% url 'cart' %}" class="view-cart-btn">View Cart</a>
        </div>
       
-       <h2 class="menu-flavors-title">{{ order_config.subtitle }}</h2>
+       <h2 class="menu-flavors-title">{{ site_config.order_online_subtitle }}</h2>
        <div class="menu-grid">
            {% for item in order_items %}
            <div class="menu-item">
