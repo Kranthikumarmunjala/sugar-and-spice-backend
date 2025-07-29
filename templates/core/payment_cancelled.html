@@ -1,0 +1,19 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Payment Cancelled{% endblock title %}
+
+{% block content %}
+<main>
+    <div class="login-page-container" style="text-align: center;">
+        <i class="fa-solid fa-times-circle" style="font-size: 5em; color: #dc3545; margin-bottom: 20px;"></i>
+        <h2 class="page-title">Payment Cancelled</h2>
+        <p class="form-instructions">
+            Your payment process was cancelled. You have not been charged.
+            Your items are still in your cart if you'd like to try again.
+        </p>
+        <a href="{% url 'cart' %}" class="login-btn" style="display: block; text-decoration: none; margin-top: 20px;">Back to Cart</a>
+    </div>
+    <div class="star-divider"></div>
+</main>
+{% endblock content %}

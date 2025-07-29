@@ -8,19 +8,37 @@
     <div class="cart-page-container">
         <div class="cart-items-column">
             <h2 class="page-title">My Cart</h2>
-            <div id="full-cart-items-list" class="cart-items-list">
-                <!-- Cart items will be injected here by JavaScript -->
-            </div>
-            <div class="cart-actions">
-                <a href="#" class="cart-action-link" id="promo-link"><i class="fa-solid fa-tag"></i> Enter a promo code</a>
-                <div id="promo-input-container" class="hidden">
-                    <input type="text" placeholder="e.g. SAVE50">
-                    <button>Apply</button>
-                </div>
-                <a href="#" class="cart-action-link" id="note-link"><i class="fa-regular fa-message"></i> Add a note</a>
-                <div id="note-input-container" class="hidden">
-                     <textarea placeholder="e.g. Leave outside the front door"></textarea>
-                </div>
+            
+            <!-- This container no longer has an ID, so main.js won't interfere with it -->
+            <div class="cart-items-list">
+                {% if cart_items %}
+                    {% for item in cart_items %}
+                    <div class="full-cart-item">
+                        <img src="{% if item.item.image %}{{ item.item.image.url }}{% else %}{% static 'path/to/default/image.png' %}{% endif %}" alt="{{ item.item.name }}">
+                        
+                        <div class="item-info">
+                            <p class="item-name">{{ item.item.name }}</p>
+                            <p class="item-price">${{ item.item.price }}</p>
+                        </div>
+                        
+                        <!-- NOTE: These quantity controls are for display only.
+                             Making them functional requires more advanced JavaScript (AJAX). -->
+                        <div class="quantity-control">
+                            <button disabled style="cursor: default;">-</button>
+                            <span>{{ item.quantity }}</span>
+                            <button disabled style="cursor: default;">+</button>
+                        </div>
+                        
+                        <!-- Display the line total calculated in the view -->
+                        <div class="item-total-full">${{ item.line_total|floatformat:2 }}</div>
+                        
+                        <!-- NOTE: A functional remove button also requires AJAX. -->
+                        <button disabled class="cart-item-remove-btn" style="cursor: default;"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="cart-empty-msg">Your cart is empty. <a href="{% url 'order-online' %}">Continue shopping</a>.</p>
+                {% endif %}
             </div>
         </div>
 
@@ -29,25 +47,26 @@
             <div class="summary-details">
                 <div class="summary-row">
                     <span>Subtotal</span>
-                    <span id="summary-subtotal">$0.00</span>
-                </div>
-                <div class="summary-row">
-                    <span>Delivery</span>
-                    <a href="#">Estimate Delivery</a>
+                    <span id="summary-subtotal">${{ subtotal|floatformat:2 }}</span>
                 </div>
                 <hr>
                 <div class="summary-row total-row">
                     <span>Total</span>
-                    <span id="summary-total">$0.00</span>
+                    <span id="summary-total">${{ subtotal|floatformat:2 }}</span>
                 </div>
             </div>
-            <button class="checkout-btn">Checkout</button>
-            <p class="secure-checkout-text"><i class="fa-solid fa-lock"></i> Secure Checkout</p>
+            
+            {% if cart_items %}
+                <!-- This link will now work correctly because JS is not interfering -->
+                <a href="{% url 'checkout' %}" class="checkout-btn" style="text-align: center; display: block; text-decoration: none;">Checkout</a>
+            {% else %}
+                <button class="checkout-btn" disabled>Checkout</button>
+            {% endif %}
+            
+            <p class="secure-checkout-text"><i class="fa-solid fa-lock"></i> Secure Checkout with Stripe</p>
         </div>
     </div>
 
-    <div class="star-divider">
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-of-life center-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-    </div>
+    <div class="star-divider"></div>
 </main>
 {% endblock content %}

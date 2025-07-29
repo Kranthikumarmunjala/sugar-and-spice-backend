@@ -1,0 +1,11 @@
+{% extends 'core/base.html' %}
+{% block title %}Payment Successful{% endblock %}
+{% block content %}
+<main>
+    <div class="login-page-container" style="text-align: center;">
+        <h2 class="page-title">Thank You!</h2>
+        <p class="form-instructions">Your payment was successful and your order has been placed. A confirmation has been sent to your email.</p>
+        <a href="{% url 'home' %}" class="login-btn" style="text-decoration: none;">Return to Home</a>
+    </div>
+</main>
+{% endblock %}

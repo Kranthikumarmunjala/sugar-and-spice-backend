@@ -78,6 +78,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'sugarandspice.wsgi.application'
 
 
+# Stripe Configuration
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51RqAYH8ASP0PdViAbphr0LQcDz0iCf8FBEGCvCn27RYGFLqlwNDB0eg5Bjvxn8nGoDBR800u0GvEVku'
+STRIPE_SECRET_KEY = 'sk_test_51RqAYH8ASPOPdViASJeVqUnQ8qIYcRclSTDVHcah4UVbzIkxbpLMlCXndjWde9xWKxzLVg8A35GrbYOyiP3hNvkV00mp0AY2Cs'
+
+
+# Add this line
+SITE_URL = 'http://127.0.0.1:8000'
+
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 

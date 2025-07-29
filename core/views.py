@@ -249,16 +249,16 @@
 
 # In core/views.py
 
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
-from django.http import JsonResponse
-from .models import (
-    TitleConfig, HomePageImage, MenuItems, OrderItems, Contact, 
-    Workshop, Booking, Cart, CustomUser
-)
-from datetime import datetime, time
-import calendar
+# from django.shortcuts import render, redirect
+# from django.contrib.auth import authenticate, login, logout
+# from django.contrib import messages
+# from django.http import JsonResponse
+# from .models import (
+#     TitleConfig, HomePageImage, MenuItems, OrderItems, Contact, 
+#     Workshop, Booking, Cart, CustomUser
+# )
+# from datetime import datetime, time
+# import calendar
 
 # --- NEW BASE CONTEXT ---
 # This function now fetches the single TitleConfig object for all pages.
@@ -338,9 +338,36 @@ def signup_view(request):
     
     return render(request, 'core/signup.html', get_site_context())
 
+
+# In core/views.py
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required # <-- Add this import
+from django.http import JsonResponse
+from django.conf import settings # <-- Add this import
+import stripe # <-- Add this import
+
+from .models import (
+    TitleConfig, HomePageImage, MenuItems, OrderItems, Contact, 
+    Workshop, Booking, Cart, CustomUser,
+    Order, OrderItem # <-- Add these imports
+)
+from datetime import datetime, time
+import calendar
+
+# --- NEW: Stripe API Key Configuration ---
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+# ... (keep get_site_context, get_available_slots, signup_view) ...
+
 def login_view(request):
+    # --- MODIFICATION START ---
+    # Prevent another user from logging in if one is already authenticated
     if request.user.is_authenticated:
+        messages.error(request, f'User "{request.user.username}" is already logged in. Please log out first.')
         return redirect('home')
+    # --- MODIFICATION END ---
         
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -357,6 +384,26 @@ def login_view(request):
 
     return render(request, 'core/login.html', get_site_context())
 
+
+# def login_view(request):
+#     if request.user.is_authenticated:
+#         return redirect('home')
+        
+#     if request.method == 'POST':
+#         email = request.POST.get('email')
+#         password = request.POST.get('password')
+
+#         user = authenticate(request, username=email, password=password)
+
+#         if user is not None:
+#             login(request, user)
+#             messages.success(request, f'Welcome back, {user.first_name or user.username}!')
+#             return redirect('home')
+#         else:
+#             messages.error(request, 'Invalid email or password.')
+
+#     return render(request, 'core/login.html', get_site_context())
+
 def logout_view(request):
     logout(request)
     messages.success(request, 'You have been successfully logged out.')
@@ -364,19 +411,57 @@ def logout_view(request):
 
 # --- CART VIEW (Logic is the same, just context method changes) ---
 
+# def cart_view(request):
+#     context = get_site_context()
+#     cart_items = []
+#     subtotal = 0
+#     if request.user.is_authenticated:
+#         cart_items = Cart.objects.filter(user=request.user).order_by('created_at')
+#         subtotal = sum(item.quantity * item.item.price for item in cart_items)
+    
+#     context.update({
+#         'cart_items': cart_items,
+#         'subtotal': subtotal,
+#     })
+#     return render(request, 'core/cart.html', context)
+
+
+
+@login_required
 def cart_view(request):
     context = get_site_context()
-    cart_items = []
+    cart_items = Cart.objects.filter(user=request.user).order_by('created_at')
+    
+    # --- MODIFICATION START ---
+    # Calculate totals and add them to the cart_items queryset
+    # This makes the data available in the template
+    cart_items_with_totals = []
     subtotal = 0
-    if request.user.is_authenticated:
-        cart_items = Cart.objects.filter(user=request.user).order_by('created_at')
-        subtotal = sum(item.quantity * item.item.price for item in cart_items)
+    for item in cart_items:
+        item.line_total = item.quantity * item.item.price
+        subtotal += item.line_total
+        cart_items_with_totals.append(item)
+    # --- MODIFICATION END ---
     
     context.update({
-        'cart_items': cart_items,
+        # Use the new list which includes the line_total
+        'cart_items': cart_items_with_totals, 
         'subtotal': subtotal,
     })
     return render(request, 'core/cart.html', context)
+
+# @login_required # <-- Add this decorator
+# def cart_view(request):
+#     context = get_site_context()
+#     # This filter ensures only the logged-in user's cart is fetched.
+#     cart_items = Cart.objects.filter(user=request.user).order_by('created_at')
+#     subtotal = sum(item.quantity * item.item.price for item in cart_items)
+    
+#     context.update({
+#         'cart_items': cart_items,
+#         'subtotal': subtotal,
+#     })
+#     return render(request, 'core/cart.html', context)
 
 # --- PAGE VIEWS (Updated to use the new context and models) ---
 
@@ -449,3 +534,103 @@ def booking_form_view(request):
         return redirect('home')
         
     return render(request, 'core/booking-form.html', context)
+
+
+
+@login_required
+def create_checkout_session(request):
+    cart_items = Cart.objects.filter(user=request.user)
+    
+    if not cart_items:
+        messages.error(request, "Your cart is empty.")
+        return redirect('cart')
+
+    line_items = []
+    for cart_item in cart_items:
+        line_items.append({
+            'price_data': {
+                'currency': 'aud',
+                'product_data': {
+                    'name': cart_item.item.name,
+                    'images': [f"{settings.SITE_URL}{cart_item.item.image.url}" if cart_item.item.image else None],
+                },
+                'unit_amount': int(cart_item.item.price * 100), # Price in cents
+            },
+            'quantity': cart_item.quantity,
+        })
+
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=line_items,
+            mode='payment',
+            customer_email=request.user.email, # Pre-fill email
+            success_url=settings.SITE_URL + '/payment-successful/?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=settings.SITE_URL + '/payment-cancelled/',
+            metadata={
+                'user_id': request.user.id
+            }
+        )
+        return redirect(checkout_session.url, code=303)
+    except Exception as e:
+        messages.error(request, f"Something went wrong with the payment gateway. {str(e)}")
+        return redirect('cart')
+
+
+@login_required
+def payment_successful(request):
+    context = get_site_context()
+    session_id = request.GET.get('session_id')
+    
+    if not session_id:
+        messages.error(request, "Invalid request for payment success.")
+        return redirect('home')
+
+    try:
+        session = stripe.checkout.Session.retrieve(session_id)
+        payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)
+        
+        # Check if order already exists
+        if Order.objects.filter(stripe_payment_intent=payment_intent.id).exists():
+            messages.info(request, "This order has already been processed.")
+            return render(request, 'core/payment_successful.html', context)
+
+        # Create Order
+        order = Order.objects.create(
+            user=request.user,
+            first_name=request.user.first_name,
+            last_name=request.user.last_name,
+            email=request.user.email,
+            total_paid=session.amount_total / 100, # Convert from cents to dollars
+            stripe_payment_intent=payment_intent.id,
+            is_paid=True
+        )
+
+        # Get cart items and create OrderItems
+        cart_items = Cart.objects.filter(user=request.user)
+        for cart_item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                item=cart_item.item,
+                quantity=cart_item.quantity,
+                price=cart_item.item.price # Save price at time of purchase
+            )
+
+        # Clear the user's cart
+        cart_items.delete()
+
+        messages.success(request, "Payment Successful! Your order has been placed.")
+        return render(request, 'core/payment_successful.html', context)
+
+    except stripe.error.StripeError as e:
+        messages.error(request, f"There was an error processing your payment: {str(e)}")
+        return redirect('home')
+    except Exception as e:
+        messages.error(request, f"An unexpected error occurred: {str(e)}")
+        return redirect('home')
+
+
+def payment_cancelled(request):
+    context = get_site_context()
+    messages.error(request, "Your payment was cancelled. You have not been charged.")
+    return render(request, 'core/payment_cancelled.html', context)

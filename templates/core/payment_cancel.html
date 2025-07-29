@@ -1,0 +1,14 @@
+{% extends 'core/base.html' %}
+{% block title %}Payment Cancelled{% endblock %}
+{% block content %}
+<main>
+    <div class="login-page-container" style="text-align: center;">
+        <h2 class="page-title">Payment Cancelled</h2>
+        <p class="form-instructions">Your order was cancelled. You have not been charged. Your items are still in your cart if you'd like to try again.</p>
+        <div style="display: flex; gap: 15px; justify-content: center;">
+            <a href="{% url 'cart' %}" class="login-btn" style="text-decoration: none; flex: 1;">Back to Cart</a>
+            <a href="{% url 'home' %}" class="login-btn" style="text-decoration: none; flex: 1; background-color: #6c757d;">Return to Home</a>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Payment Successful{% endblock title %}
+
+{% block content %}
+<main>
+    <div class="login-page-container" style="text-align: center;">
+        <i class="fa-solid fa-check-circle" style="font-size: 5em; color: #28a745; margin-bottom: 20px;"></i>
+        <h2 class="page-title">Payment Successful!</h2>
+        <p class="form-instructions">
+            Thank you for your order. We have received your payment and your order is being processed.
+            A confirmation has been sent to your email address.
+        </p>
+        <a href="{% url 'order-online' %}" class="login-btn" style="display: block; text-decoration: none; margin-top: 20px;">Continue Shopping</a>
+    </div>
+    <div class="star-divider"></div>
+</main>
+{% endblock content %}
