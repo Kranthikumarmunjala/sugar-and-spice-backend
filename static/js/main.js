@@ -1,5 +1,3 @@
-// In static/js/main.js
-
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- CART LOGIC ---
