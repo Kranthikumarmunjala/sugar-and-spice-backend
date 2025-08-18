@@ -1,156 +1,241 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- CART LOGIC ---
-    const cartOverlay = document.querySelector('.cart-overlay');
-    const cartSidebar = document.querySelector('.cart-sidebar');
-    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-    const fullPageCartList = document.getElementById('full-cart-items-list');
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    /**
+     * =================================================================
+     * SECTION 1: HELPERS & BACKEND COMMUNICATION
+     * =================================================================
+     * This section handles communication with the Django server.
+     */
 
-    const openCart = () => {
-        if (cartOverlay && cartSidebar) {
-            cartOverlay.classList.add('is-open');
-            cartSidebar.classList.add('is-open');
+    // Helper function to get the CSRF token required for POST requests in Django
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
         }
-    };
-    const closeCart = () => {
-        if (cartOverlay && cartSidebar) {
-            cartOverlay.classList.remove('is-open');
-            cartSidebar.classList.remove('is-open');
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    // Function to send cart updates to the Django backend via API
+    const sendCartUpdateToServer = async (itemId, action) => {
+        // We can check if the user is logged in by seeing if the "Log Out" link exists.
+        // If it doesn't, the user is a guest, and we don't send updates to the server.
+        const isLoggedIn = document.querySelector('a[href="/logout/"]');
+        if (!isLoggedIn) {
+            console.log("User is not logged in. Cart state is local only.");
+            return;
         }
-    };
-    const saveCart = () => {
-        localStorage.setItem('cart', JSON.stringify(cart));
-        updateCartUI();
-    };
-    const addToCart = (item) => {
-        const existingItem = cart.find(cartItem => cartItem.id === item.id);
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            cart.push({ ...item, quantity: 1 });
-        }
-        saveCart();
-    };
-    const updateQuantity = (id, change) => {
-        const item = cart.find(cartItem => cartItem.id === id);
-        if (item) {
-            item.quantity += change;
-            if (item.quantity <= 0) {
-                removeItem(id);
+
+        try {
+            const response = await fetch('/api/update-cart/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify({ 'itemId': itemId, 'action': action })
+            });
+            if (response.ok) {
+                console.log(`Server successfully updated: ${action} item ${itemId}`);
             } else {
-                saveCart();
+                console.error('Server returned an error:', await response.json());
             }
-        }
-    };
-    const removeItem = (id) => {
-        cart = cart.filter(item => item.id !== id);
-        saveCart();
-    };
-    const updateCartUI = () => {
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        
-        const cartIconLink = document.getElementById('cart-icon-link');
-        if (cartIconLink) {
-            const existingCount = cartIconLink.querySelector('.cart-item-count');
-            if (existingCount) existingCount.remove();
-            if (totalItems > 0) {
-                const countSpan = document.createElement('span');
-                countSpan.className = 'cart-item-count';
-                countSpan.textContent = totalItems;
-                cartIconLink.appendChild(countSpan);
-            }
-        }
-        
-        if (cartSidebar) {
-            cartSidebar.innerHTML = `
-                <div class="cart-header"><h3>Cart</h3><button class="cart-close-btn">×</button></div>
-                <div class="cart-body">
-                    ${cart.length > 0 ? cart.map(item => `
-                        <div class="cart-item">
-                            <img src="${item.image}" alt="${item.name}">
-                            <div class="item-details">
-                                <p class="item-name">${item.name}</p>
-                                <p class="item-price">$${item.price.toFixed(2)}</p>
-                                <div class="quantity-control">
-                                    <button class="quantity-btn" data-id="${item.id}" data-change="-1">-</button>
-                                    <span>${item.quantity}</span>
-                                    <button class="quantity-btn" data-id="${item.id}" data-change="1">+</button>
-                                </div>
-                            </div>
-                            <div class="item-total">$${(item.price * item.quantity).toFixed(2)}</div>
-                            <button class="cart-item-remove-btn" data-id="${item.id}"><i class="fa-solid fa-trash-can"></i></button>
-                        </div>`).join('') : '<p class="cart-empty-msg">Your cart is empty.</p>'}
-                </div>
-                <div class="cart-footer">
-                    <div class="subtotal-row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
-                    <a href="/cart/" class="view-cart-btn-sidebar">View Cart</a>
-                </div>`;
-        }
-
-        if (fullPageCartList) {
-            fullPageCartList.innerHTML = `${cart.length > 0 ? cart.map(item => `
-                <div class="full-cart-item">
-                    <img src="${item.image}" alt="${item.name}">
-                    <div class="item-info"><p class="item-name">${item.name}</p><p class="item-price">$${item.price.toFixed(2)}</p></div>
-                    <div class="quantity-control">
-                        <button class="quantity-btn" data-id="${item.id}" data-change="-1">-</button>
-                        <span>${item.quantity}</span>
-                        <button class="quantity-btn" data-id="${item.id}" data-change="1">+</button>
-                    </div>
-                    <div class="item-total-full">$${(item.price * item.quantity).toFixed(2)}</div>
-                    <button class="cart-item-remove-btn" data-id="${item.id}"><i class="fa-solid fa-trash-can"></i></button>
-                </div>`).join('') : '<p class="cart-empty-msg">Your cart is empty. <a href="/order-online/">Continue shopping</a>.</p>'}`;
-            const summarySubtotal = document.getElementById('summary-subtotal');
-            const summaryTotal = document.getElementById('summary-total');
-            if (summarySubtotal && summaryTotal) {
-                summarySubtotal.textContent = `$${subtotal.toFixed(2)}`;
-                summaryTotal.textContent = `$${subtotal.toFixed(2)}`;
-            }
+        } catch (error) {
+            console.error('Failed to send cart update to server:', error);
         }
     };
 
-    document.body.addEventListener('click', (e) => {
-        const cartIcon = e.target.closest('#cart-icon-link');
-        if (cartIcon) {
-            e.preventDefault();
-            openCart();
-        }
-        if (e.target.classList.contains('cart-close-btn') || e.target.classList.contains('cart-overlay')) closeCart();
-        if (e.target.matches('.quantity-btn')) updateQuantity(e.target.dataset.id, parseInt(e.target.dataset.change, 10));
-        if (e.target.closest('.cart-item-remove-btn')) removeItem(e.target.closest('.cart-item-remove-btn').dataset.id);
-    });
-    
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            const { id, name, price, image } = e.target.dataset;
-            addToCart({ id, name: name, price: parseFloat(price), image: image });
-            openCart();
-        });
-    });
-    
-    const promoLink = document.getElementById('promo-link');
-    if (promoLink) promoLink.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('promo-input-container').classList.toggle('hidden'); });
-    const noteLink = document.getElementById('note-link');
-    if (noteLink) noteLink.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('note-input-container').classList.toggle('hidden'); });
-    
+/*
+ * =================================================================
+ * SECTION 2: CART LOGIC (FRONTEND)
+ * =================================================================
+ * This section manages the cart sidebar, icon, and interactions.
+ * It uses localStorage for instant UI feedback and for guest users.
+ */
+
+const cartOverlay = document.querySelector('.cart-overlay');
+const cartSidebar = document.querySelector('.cart-sidebar');
+const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+
+// --- START: MODIFIED CODE ---
+// This is the key change. We now initialize the cart based on whether the
+// user is logged in and if the server has provided cart data.
+
+let cart = [];
+// Check if the user is logged in by looking for the "Log Out" link
+const isLoggedIn = document.querySelector('a[href="/logout/"]');
+
+// The global variable `initialCartData` is defined in your base.html template
+if (isLoggedIn && typeof initialCartData !== 'undefined' && initialCartData.length > 0) {
+    // If the user is logged in AND Django provided cart data, use it as the source of truth.
+    cart = initialCartData;
+    // Sync this server-side data to localStorage for consistency.
+    localStorage.setItem('cart', JSON.stringify(cart));
+} else if (!isLoggedIn) {
+    // If the user is a guest, rely ONLY on localStorage.
+    cart = JSON.parse(localStorage.getItem('cart')) || [];
+}
+// If the user is logged in but their server-side cart is empty, 'cart' will correctly remain an empty array [].
+
+// --- END: MODIFIED CODE ---
+
+
+const openCart = () => {
+    if (cartOverlay && cartSidebar) {
+        cartOverlay.classList.add('is-open');
+        cartSidebar.classList.add('is-open');
+    }
+};
+
+const closeCart = () => {
+    if (cartOverlay && cartSidebar) {
+        cartOverlay.classList.remove('is-open');
+        cartSidebar.classList.remove('is-open');
+    }
+};
+
+// Saves the cart to localStorage and updates the UI
+const saveCart = () => {
+    localStorage.setItem('cart', JSON.stringify(cart));
     updateCartUI();
+};
+
+// Adds an item to the cart and notifies the server
+const addToCart = (item) => {
+    const existingItem = cart.find(cartItem => cartItem.id === item.id);
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({ ...item, quantity: 1 });
+    }
+    // Notify the server of the change
+    sendCartUpdateToServer(item.id, 'add');
+    saveCart();
+};
+
+// Updates quantity and notifies the server
+const updateQuantity = (id, change) => {
+    const item = cart.find(cartItem => cartItem.id === id);
+    if (item) {
+        item.quantity += change;
+        if (item.quantity <= 0) {
+            // removeItem will handle its own server update
+            removeItem(id);
+        } else {
+            // Note: The action for increasing quantity is 'add' as per your backend view
+            const action = change > 0 ? 'add' : 'remove';
+            sendCartUpdateToServer(id, action);
+            saveCart();
+        }
+    }
+};
+
+// Removes an item completely and notifies the server
+const removeItem = (id) => {
+    cart = cart.filter(item => item.id !== id);
+    // Notify the server to delete the item
+    sendCartUpdateToServer(id, 'delete');
+    saveCart();
+};
+
+// Renders the cart sidebar and icon count based on the local `cart` array
+const updateCartUI = () => {
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const subtotal = cart.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
     
+    const cartIconLink = document.getElementById('cart-icon-link');
+    if (cartIconLink) {
+        const existingCount = cartIconLink.querySelector('.cart-item-count');
+        if (existingCount) existingCount.remove();
+        if (totalItems > 0) {
+            const countSpan = document.createElement('span');
+            countSpan.className = 'cart-item-count';
+            countSpan.textContent = totalItems;
+            cartIconLink.appendChild(countSpan);
+        }
+    }
+    
+    if (cartSidebar) {
+        cartSidebar.innerHTML = `
+            <div class="cart-header"><h3>Cart</h3><button class="cart-close-btn">×</button></div>
+            <div class="cart-body">
+                ${cart.length > 0 ? cart.map(item => `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="item-details">
+                            <p class="item-name">${item.name}</p>
+                            <p class="item-price">$${parseFloat(item.price).toFixed(2)}</p>
+                            <div class="quantity-control">
+                                <button class="quantity-btn" data-id="${item.id}" data-change="-1">-</button>
+                                <span>${item.quantity}</span>
+                                <button class="quantity-btn" data-id="${item.id}" data-change="1">+</button>
+                            </div>
+                        </div>
+                        <div class="item-total">$${(parseFloat(item.price) * item.quantity).toFixed(2)}</div>
+                        <button class="cart-item-remove-btn" data-id="${item.id}"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>`).join('') : '<p class="cart-empty-msg">Your cart is empty.</p>'}
+            </div>
+            <div class="cart-footer">
+                <div class="subtotal-row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
+                <a href="/cart/" class="view-cart-btn-sidebar">View Cart</a>
+            </div>`;
+    }
+};
+
+// --- Event Listeners for Cart ---
+document.body.addEventListener('click', (e) => {
+    if (e.target.closest('#cart-icon-link')) {
+        e.preventDefault();
+        openCart();
+    }
+    if (e.target.classList.contains('cart-close-btn') || e.target.classList.contains('cart-overlay')) {
+        closeCart();
+    }
+    if (e.target.matches('.quantity-btn')) {
+        updateQuantity(e.target.dataset.id, parseInt(e.target.dataset.change, 10));
+    }
+    if (e.target.closest('.cart-item-remove-btn')) {
+        removeItem(e.target.closest('.cart-item-remove-btn').dataset.id);
+    }
+});
+
+addToCartButtons.forEach(button => {
+    button.addEventListener('click', (e) => {
+        const { id, name, price, image } = e.target.dataset;
+        addToCart({ id, name, price: parseFloat(price), image });
+        openCart();
+    });
+});
+
+// Initial UI update on page load
+updateCartUI();
+    /**
+     * =================================================================
+     * SECTION 3: OTHER PAGE-SPECIFIC LOGIC
+     * =================================================================
+     * This is the original, unchanged code for other parts of the site.
+     */
+
     // --- HOMEPAGE SLIDER ---
     const heroSlides = document.querySelectorAll('.hero-slide');
     if (heroSlides.length > 0) {
         let currentSlideIndex = 0;
         heroSlides[0].classList.add('active');
-
         const showNextSlide = () => {
             const previousSlideIndex = currentSlideIndex;
             currentSlideIndex = (currentSlideIndex + 1) % heroSlides.length;
-            
             heroSlides[previousSlideIndex].classList.add('previous');
             heroSlides[previousSlideIndex].classList.remove('active');
             heroSlides[currentSlideIndex].classList.add('active');
-            
             setTimeout(() => {
                 heroSlides[previousSlideIndex].classList.remove('previous');
             }, 1000);
@@ -165,11 +250,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const itemWidth = 180 + 10;
         let galleryIndex = 0;
         gallerySection.style.transition = 'transform 0.5s ease-in-out';
-
         const scrollGallery = () => {
             galleryIndex++;
             gallerySection.style.transform = `translateX(-${galleryIndex * itemWidth}px)`;
-            
             if (galleryIndex === numOriginalItems) {
                 setTimeout(() => {
                     gallerySection.style.transition = 'none';
@@ -184,7 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- BOOKING FLOW LOGIC ---
-
     // 1. Save selected workshop details when "Book Now" is clicked
     const bookNowLinks = document.querySelectorAll('.book-now-link');
     bookNowLinks.forEach(link => {
@@ -286,8 +368,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.querySelectorAll('.day.selected').forEach(d => d.classList.remove('selected'));
                 e.target.classList.add('selected');
                 updateAvailabilityPanel(parseInt(e.target.dataset.date, 10));
-                
-                // Reset time selection
                 selectedTime = null;
                 nextButton.disabled = true;
                 serviceDetailsSection.classList.add('hidden');
@@ -301,7 +381,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 selectedTime = e.target.dataset.time;
         
                 const formattedDate = selectedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-                // document.getElementById('service-name-details').textContent = workshop.name;
                 document.getElementById('service-price-details').textContent = workshop.price;
                 document.getElementById('service-datetime-details').textContent = `${formattedDate} at ${selectedTime}`;
                 document.getElementById('service-duration-details').textContent = workshop.duration;
@@ -337,7 +416,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('summary-date-time').textContent = `${bookingDetails.date}, ${bookingDetails.time}`;
             document.getElementById('summary-price').textContent = bookingDetails.price;
         } else {
-            // If user lands here without booking details, redirect them
             window.location.href = '/workshops/';
         }
     }

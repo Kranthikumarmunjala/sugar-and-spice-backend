@@ -73,6 +73,14 @@
    <div class="cart-overlay"></div>
    <aside class="cart-sidebar"></aside>
 
+
+
+   <script>
+    // Pass cart data from Django to JavaScript
+    // The |safe filter is crucial to prevent the JSON string from being escaped
+    const initialCartData = {{ cart_json|safe }};
+   </script>
+
    <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

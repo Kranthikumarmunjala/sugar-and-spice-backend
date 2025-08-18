@@ -659,6 +659,7 @@ from django.contrib.auth.decorators import login_required # <-- Add this import
 from django.http import JsonResponse
 from django.conf import settings # <-- Add this import
 import stripe # <-- Add this import
+import json
 
 from .models import (
     TitleConfig, HomePageImage, MenuItems, OrderItems, Contact, 
@@ -1025,3 +1026,47 @@ def payment_cancelled(request):
     context = get_site_context()
     messages.error(request, "Your payment was cancelled. You have not been charged.")
     return render(request, 'core/payment_cancelled.html', context)
+
+
+
+
+
+
+
+
+# --- NEW VIEW TO HANDLE CART UPDATES FROM JAVASCRIPT ---
+@login_required
+def update_cart(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        item_id = data.get('itemId')
+        action = data.get('action')  # e.g., 'add', 'remove', 'delete'
+
+        if not item_id or not action:
+            return JsonResponse({'status': 'error', 'message': 'Missing data'}, status=400)
+
+        try:
+            item = OrderItems.objects.get(id=item_id)
+            # Get or create a cart item for the logged-in user and the specific menu item
+            cart_item, created = Cart.objects.get_or_create(user=request.user, item=item)
+
+            if action == 'add':
+                if not created:
+                    cart_item.quantity += 1
+                cart_item.save()
+            elif action == 'remove':
+                cart_item.quantity -= 1
+                if cart_item.quantity <= 0:
+                    cart_item.delete()
+                else:
+                    cart_item.save()
+            elif action == 'delete':
+                cart_item.delete()
+
+            return JsonResponse({'status': 'success', 'message': 'Cart updated'})
+        except OrderItems.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Item not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)

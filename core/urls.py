@@ -61,6 +61,12 @@ urlpatterns = [
     path('booking-calendar/', views.booking_calendar_view, name='booking-calendar'),
     path('booking-form/', views.booking_form_view, name='booking-form'),
 
+
+
+
+    # --- NEW: API URL for Cart Updates ---
+    path('api/update-cart/', views.update_cart, name='update-cart'),
+
     # --- NEW: Payment URLs ---
     path('checkout/', views.create_checkout_session, name='checkout'),
     path('payment-successful/', views.payment_successful, name='payment-successful'),
