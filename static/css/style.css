@@ -174,8 +174,8 @@ main {
 .info-link { text-decoration: underline; font-weight: bold; }
 
 /* --- Content Page Sections (About, Contact) --- */
-.content-page-section { display: flex; flex-wrap: wrap; align-items: center; gap: 40px; padding: 20px; text-align: left; }
-.content-image { flex: 1; min-width: 350px; }
+.content-page-section { display: flex; flex-wrap: wrap; align-items: center; gap: 40px;  text-align: left; }
+.content-image { flex: 1;  }
 .content-image img { width: 100%; height: auto; max-width: 100%; object-fit: cover; }
 .content-text { flex: 2; min-width: 300px; }
 .content-text h2 { font-size: 2.5em; color: var(--heading-color); margin-top: 0; }
@@ -339,7 +339,7 @@ main {
 /* --- Full Cart Page --- */
 .cart-page-container { display: flex; gap: 40px; padding: 20px; text-align: left; flex-wrap: wrap; }
 .cart-items-column { flex: 2; min-width: 320px; }
-.order-summary-column { flex: 1; min-width: 300px; background-color: #fdfdfd; padding: 20px; border: 1px solid #eee; border-radius: 5px; height: fit-content; }
+.order-summary-column { flex: 1; background-color: #fdfdfd; padding: 20px; border: 1px solid #eee; border-radius: 5px; height: fit-content; }
 .full-cart-item { display: flex; align-items: center; gap: 20px; padding: 20px 0; border-bottom: 1px solid #eee; }
 .full-cart-item img { width: 100px; height: 100px; object-fit: cover; }
 .full-cart-item .item-info { flex-grow: 1; }
@@ -354,7 +354,7 @@ main {
 .summary-details .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; }
 .summary-details hr { border: none; border-top: 1px solid #eee; margin: 20px 0; }
 .summary-row.total-row { font-weight: bold; font-size: 1.2em; }
-.checkout-btn { width: 100%; padding: 15px; background-color: var(--light-blue); color: white; border: none; font-size: 1.1em; cursor: pointer; margin-bottom: 10px; transition: background-color 0.3s; }
+.checkout-btn { width: 100%; padding: 10px; background-color: var(--light-blue); color: white; border: none; font-size: 1.1em; cursor: pointer; margin-bottom: 10px; transition: background-color 0.3s; }
 .checkout-btn:hover { background-color: #3aa9af; }
 .secure-checkout-text { text-align: center; font-size: 0.9em; color: #888; }
 .secure-checkout-text i { margin-right: 5px; }
