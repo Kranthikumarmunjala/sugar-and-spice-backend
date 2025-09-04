@@ -354,7 +354,8 @@ main {
 .summary-details .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; }
 .summary-details hr { border: none; border-top: 1px solid #eee; margin: 20px 0; }
 .summary-row.total-row { font-weight: bold; font-size: 1.2em; }
-.checkout-btn { width: 100%; padding: 10px; background-color: var(--light-blue); color: white; border: none; font-size: 1.1em; cursor: pointer; margin-bottom: 10px; transition: background-color 0.3s; }
+/* .checkout-btn { width: 100%; padding: 10px; background-color: var(--light-blue); color: white; border: none; font-size: 1.1em; cursor: pointer; margin-bottom: 10px; transition: background-color 0.3s;transform: translateX(-4%); } */
+.checkout-btn {  padding: 10px; background-color: var(--light-blue); color: white; border: none; font-size: 1.1em; cursor: pointer; margin-bottom: 10px; transition: background-color 0.3s; }
 .checkout-btn:hover { background-color: #3aa9af; }
 .secure-checkout-text { text-align: center; font-size: 0.9em; color: #888; }
 .secure-checkout-text i { margin-right: 5px; }
