@@ -1,23 +1,3 @@
-# # In core/admin.py
-
-# from django.contrib import admin
-# from .models import (
-#     CustomUser, TitleConfig, HomePageImage, MenuItems, 
-#     OrderItems, Contact, Workshop, Booking, Cart
-# )
-
-# # Register all models here to make them accessible in the admin interface.
-
-# admin.site.register(CustomUser)
-# admin.site.register(TitleConfig) # The new, consolidated config model
-# admin.site.register(HomePageImage)
-# admin.site.register(MenuItems)
-# admin.site.register(OrderItems)
-# admin.site.register(Contact)
-# admin.site.register(Workshop)
-# admin.site.register(Booking)
-# admin.site.register(Cart)
-
 
 
 # In core/admin.py
